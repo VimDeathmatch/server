@@ -1,3 +1,4 @@
+import { Puzzle } from "../../puzzles";
 import MockSocket from "./mock-socket";
 import { createMessage } from "../../handle-messages";
 import {
@@ -10,14 +11,13 @@ import {
 export default function createGame(
     startText: string[] = ["foo"], endText: string[] = ["bar"],
     opts?: GameOptions): [MockSocket, MockSocket, Game] {
+    const puzzle: Puzzle = {
+        start: startText,
+        end: endText,
+        filetype: "javascript",
+    };
 
-    const game = cG(Difficulty.easy, startText, endText, opts);
-    /*
-       if (logEmits) {
-       consoleLogger(game);
-       }
-     */
-
+    const game = cG(Difficulty.easy, puzzle, opts);
     const p1 = new MockSocket();
     const p2 = new MockSocket();
 
@@ -29,6 +29,7 @@ export default function createGame(
 
     return [p1, p2, game];
 }
+
 export async function writeMessage(p: MockSocket, type: string, message: string | object) {
     await p.callbacks["data"](Buffer.from(createMessage(type, message)));
 }

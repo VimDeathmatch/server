@@ -21,3 +21,5 @@ module.exports.end = `function () {
         </FooContainer>
     );
 };`
+
+module.exports.filetype = "javascript";

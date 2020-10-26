@@ -1,3 +1,5 @@
+import * as fs from "fs";
+
 export type Loggable = {
     on: (key: string, ...args: any[]) => void;
 }
@@ -33,6 +35,8 @@ function createStringGroup(args: any[]): string {
         return acc;
     }, []).join("")}`;
 }
+
+fs.writeFileSync("/log/VimDeathmatch.log", "foo-bar");
 
 let id = 0;
 export function getNewId(): number {

@@ -4,8 +4,11 @@ import * as path from "path";
 export type PuzzleGenerator = {
     start: (...args: any[]) => void,
     end: (...args: any[]) => void,
+    filetype: string,
 };
+
 export type Puzzle = {
+    filetype: string,
     start: string[],
     end: string[],
 };
@@ -19,6 +22,7 @@ const files: Puzzle[] = fs.readdirSync(__dirname).
         return {
             start: stripFunction(contents.start),
             end: stripFunction(contents.end),
+            filetype: contents.filetype,
         };
     }).
     filter(x => x);

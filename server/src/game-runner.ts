@@ -23,8 +23,7 @@ export default class GameRunner extends EventEmitter {
         if (!this.game || !this.game.needsPlayers() ||
             this.game.isFinished() || this.game.hasDisconnection()) {
 
-            const puzzle = generatePuzzle();
-            this.game = createGame(Difficulty.easy, puzzle.start, puzzle.end);
+            this.game = createGame(Difficulty.easy, generatePuzzle());
         }
         this.game.addPlayer(player);
     }

@@ -30,3 +30,4 @@ module.exports.end = function() {
     ];
 };
 
+module.exports.filetype = "javascript";

@@ -1,5 +1,6 @@
 import * as net from "net";
 
+import { Puzzle } from "./puzzles";
 import { EventEmitter } from "events";
 import HandleMsg, { createMessage } from "./handle-messages";
 import { PlayerStats, Stats } from "./score";
@@ -129,8 +130,7 @@ export class Game {
     private gameHasEnded: boolean = false;
 
     constructor(private difficulty: Difficulty,
-                private startText: string[],
-                private endText: string[],
+                private puzzle: Puzzle,
                 private opts: GameOptions = {
                     timeout: {
                         readyTime: 30000,
@@ -145,7 +145,7 @@ export class Game {
             id: this.gameId,
         });
         this.p1 = this.p2 = null;
-        this.logger.info("GameConstructor", difficulty, startText, endText);
+        this.logger.info("GameConstructor", difficulty, puzzle);
     }
 
     toObj() {
@@ -340,8 +340,9 @@ export class Game {
         }
 
         const msg = createMessage("start-game", {
-            left: this.startText,
-            right: this.endText,
+            left: this.puzzle.start,
+            right: this.puzzle.end,
+            filetype: this.puzzle.filetype,
             editable: true,
         });
 
@@ -630,9 +631,7 @@ export class Game {
 }
 
 export function createGame(
-    diff: Difficulty, startText: string[],
-    endText: string[], opts?: GameOptions): Game {
-
-    return new Game(diff, startText, endText, opts);
+    diff: Difficulty, puzzle: Puzzle, opts?: GameOptions): Game {
+    return new Game(diff, puzzle, opts);
 }
 
