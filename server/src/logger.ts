@@ -36,8 +36,6 @@ function createStringGroup(args: any[]): string {
     }, []).join("")}`;
 }
 
-fs.writeFileSync("/log/VimDeathmatch.log", "foo-bar");
-
 let id = 0;
 export function getNewId(): number {
     return ++id;
