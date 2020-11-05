@@ -118,23 +118,8 @@ export class Game {
         this.setPlayerFailureTime(
             player, READY_COMMAND_TIMEOUT, NO_READY_COMMAND_MSG);
 
-        p.on("data", (d) => {
-            const {
-                completed,
-                type,
-                message
-            } = player.parser.parse(d.toString());
-
-            if (completed) {
-                this.logger.info("data#completed", player.id, type, message);
-                this.processMessage(player, type, message);
-            }
-        });
-
-        p.on("end", () => {
-            this.onConnectionEnded(player);
-        });
-
+        player.on("msg", (type, msg) => this.processMessage(player, type, msg));
+        player.on("end", () => this.onConnectionEnded(player));
         player.on("send-failed", msg => {
             this.logger.info("data#Player_send", player.id, msg);
         });

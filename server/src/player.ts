@@ -27,6 +27,24 @@ export class Player extends EventEmitter {
         this.failureMessage = null;
         this.logger = logger && logger.child(() => [], "Player") ||
             new Logger(() => [this.id], { className: "Player" });
+
+        conn.on("data", (d) => {
+            const {
+                completed,
+                type,
+                message
+            } = this.parser.parse(d.toString());
+
+            if (completed) {
+                this.logger.info("constructor#data", this.id, type, message);
+                this.emit("msg", type, message);
+            }
+        });
+
+        conn.on("end", () => {
+            this.emit("end");
+        });
+
     }
 
     // I like this,
