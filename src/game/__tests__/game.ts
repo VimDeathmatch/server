@@ -1,15 +1,18 @@
+import pino from "pino";
+
 import { setNextPromise } from "./__mocks__/player-join";
 import MockSocket from "./__helpers__/mock-socket";
-import { createGame } from "../";
+
+// TODO: How to figure this out.  I don't want to have to specify the index
+import { createGame } from "../index";
+
 import { Game } from "../../types";
 
-function wait(ms: number): Promise<void> {
-    return new Promise(res => setTimeout(res, ms));
-}
+const logger = pino({ name: "__tests__/game"});
 
 describe("Game", function() {
     function createTestGame(start = [""], end = [""], filetype = "javascript"): Game {
-        return createGame({start, end, filetype});
+        return createGame({start, end, filetype}, logger);
     }
 
     it("A player should be able to join", async function() {
