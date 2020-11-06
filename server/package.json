@@ -4,20 +4,23 @@
     "description": "",
     "main": "index.js",
     "scripts": {
+        "test": "jest",
         "start": "ts-node src/server.ts"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "devDependencies": {
-        "ts-jest": "^26.2.0",
         "@types/jest": "^26.0.10",
-        "jest": "^26.4.1",
+        "@types/node": "^14.0.27",
+        "jest": "^26.6.3",
+        "ts-jest": "^26.2.0",
         "ts-node": "^8.10.2",
-        "typescript": "^3.9.7",
-        "@types/node": "^14.0.27"
+        "typescript": "^3.9.7"
     },
     "jest": {
-        "preset": "ts-jest"
+        "preset": "ts-jest",
+        "testMatch": ["**/__tests__/**/*.[jt]s?(x)"],
+        "testPathIgnorePatterns": ["node_modules", "__mocks__", "__helpers__"]
     }
 }
