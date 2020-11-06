@@ -4,8 +4,8 @@ export function setNextPromise(p: Promise<string>) {
     currentPromise = p;
 }
 
-jest.mock('../../player-join', () => {
-    playerJoin: jest.fn().mockImplementation(() => {
+jest.mock('../../player-join', () =>
+    jest.fn().mockImplementation(() => {
         if (!currentPromise) {
             throw new Error("NO PROMISE PROVIDED");
         }
@@ -15,5 +15,4 @@ jest.mock('../../player-join', () => {
 
         return promise;
     })
-});
-
+);

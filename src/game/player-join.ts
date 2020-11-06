@@ -1,10 +1,6 @@
-import * as net from "net";
-import pino from "pino";
-
-import { createPlayer } from "../player";
 import { Player } from "../types";
 
-export function playerJoin(player: Player): Promise<string> {
+export default function playerJoin(player: Player): Promise<string> {
     return new Promise((res, rej) => {
         function onMessage(type, msg) {
 

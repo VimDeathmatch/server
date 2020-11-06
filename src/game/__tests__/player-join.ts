@@ -1,10 +1,10 @@
-import * as pino from "pino";
+import pino from "pino";
 
 import MockSocket from "./__helpers__/mock-socket";
 
 import { createPlayer } from "../../player";
 import { createMessage } from "../../handle-messages";
-import { playerJoin } from "../player-join";
+import playerJoin from "../player-join";
 
 const logger = pino({name: "playerJoin.test"});
 

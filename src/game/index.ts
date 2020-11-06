@@ -1,8 +1,8 @@
 import * as net from "net";
-import * as pino from "pino";
+import pino from "pino";
 import { EventEmitter } from "events";
 
-import { playerJoin } from "./player-join";
+import playerJoin from "./player-join";
 import { Player, Game } from "../types";
 import { createPlayer } from "../player";
 import { Puzzle } from "../puzzles";
@@ -61,8 +61,7 @@ class GameImpl extends EventEmitter implements Game {
             this.emit("needsPlayers");
             */
 
-            this.logger.error("Player unable to join", {
-                e,
+            this.logger.error(e, "Player unable to join", {
                 players: this.players
             });
 

@@ -1,5 +1,5 @@
 import * as net from "net";
-import * as pino from "pino";
+import pino from "pino";
 
 import HandleMsg, { createMessage } from "./handle-messages";
 import { Stats } from "./score";
