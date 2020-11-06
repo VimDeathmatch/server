@@ -31,10 +31,10 @@ class GameImpl extends EventEmitter implements Game {
     private logger: pino.Logger;
     private players: Player[];
 
-    constructor(puzzle: Puzzle) {
+    constructor(puzzle: Puzzle, logger: pino.Logger) {
         super();
         this.players = [];
-        this.logger = pino({
+        this.logger = logger.child({
             name: "Game",
         });
     }
@@ -60,7 +60,6 @@ class GameImpl extends EventEmitter implements Game {
             // TODO(v2)
             this.emit("needsPlayers");
             */
-
             this.logger.error(e, "Player unable to join", {
                 players: this.players
             });
@@ -73,6 +72,6 @@ class GameImpl extends EventEmitter implements Game {
     }
 }
 
-export function createGame(puzzle: Puzzle) {
-    return new GameImpl(puzzle);
+export function createGame(puzzle: Puzzle, logger: pino.Logger) {
+    return new GameImpl(puzzle, logger);
 };

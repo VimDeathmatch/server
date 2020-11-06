@@ -1,21 +1,19 @@
 import { EventEmitter } from "events";
 import * as net from "net";
-import { createGame, Difficulty, Game } from "./game";
-import generatePuzzle from "./puzzles";
 
-import { Logger } from "./logger";
+import pino from "pino";
+
+import { Game } from "./types";
+import { createGame } from "./game";
+import generatePuzzle from "./puzzles";
 
 export default class GameRunner extends EventEmitter {
     private game?: Game;
-    private logger: Logger;
+    private logger: pino.Logger;
 
     constructor() {
         super();
-        this.logger = new Logger(() => [
-            this.game && this.game.getInfo(),
-        ], {
-            className: `GameRunner`
-        });
+        this.logger = pino({ name: "GameRunner" });
     }
 
     addPlayer(player: net.Socket) {
@@ -23,7 +21,7 @@ export default class GameRunner extends EventEmitter {
         if (!this.game || !this.game.needsPlayers() ||
             this.game.isFinished() || this.game.hasDisconnection()) {
 
-            this.game = createGame(Difficulty.easy, generatePuzzle());
+            this.game = createGame(generatePuzzle(), this.logger);
         }
         this.game.addPlayer(player);
     }
