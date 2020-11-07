@@ -4,25 +4,17 @@ import SelectorNode from "../selector";
 
 import {
     OneShotNode,
+    spyOn,
 } from "../../../__mocks__/bnode";
 
 describe("Selector Node", function() {
-
-    function spyOn(node: BehavorialNode): BehavorialNode {
-        jest.spyOn(node, "run");
-        jest.spyOn(node, "shouldEnter");
-        jest.spyOn(node, "enter");
-        jest.spyOn(node, "exit");
-
-        return node;
-    }
 
     async function testNode(selector: BehavorialNode, node: BehavorialNode) {
         let shouldEnter = await selector.shouldEnter([]);
         expect(shouldEnter).toEqual(true);
         await selector.enter();
 
-        await selector.run();
+        await selector.run([]);
         expect(node.enter).toHaveBeenCalledTimes(1);
         expect(node.shouldEnter).toHaveBeenCalledTimes(1);
         expect(node.exit).toHaveBeenCalledTimes(0);

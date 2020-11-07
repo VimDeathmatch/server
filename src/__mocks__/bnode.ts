@@ -1,5 +1,14 @@
 import { BehavorialNode, Player } from "../types";
 
+export function spyOn(node: BehavorialNode): BehavorialNode {
+    jest.spyOn(node, "run");
+    jest.spyOn(node, "shouldEnter");
+    jest.spyOn(node, "enter");
+    jest.spyOn(node, "exit");
+
+    return node;
+}
+
 export class OneShotNode implements BehavorialNode {
     constructor(public id: number) {}
 

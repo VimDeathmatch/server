@@ -1,0 +1,20 @@
+{
+  "configurations": {
+    "test": {
+      "adapter": "vscode-node",
+      "configuration": {
+        "request": "launch",
+        "protocol": "auto",
+        "stopOnEntry": true,
+        "console": "integratedTerminal",
+        "program": "${workspaceRoot}/node_modules/.bin/jest",
+        "args": ["player-join"],
+        "cwd": "${workspaceRoot}"
+      }
+    },
+    "foobar": {}
+  }
+}
+
+
+

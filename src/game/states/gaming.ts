@@ -2,6 +2,7 @@ import pino from "pino";
 
 import { Player, GameConfig } from "../../types";
 import { PlayerStats } from "../score";
+import PlayerFailure from "../errors/player-failure";
 
 // send the game message
 //        -> some amount of time to complete it.
@@ -11,12 +12,6 @@ import { PlayerStats } from "../score";
 //        -> transition
 function wait(ms: number): Promise<void> {
     return new Promise(res => setTimeout(res, ms));
-}
-
-class PlayerFailure extends Error {
-    constructor(public player: Player, public reason: Error) {
-        super();
-    }
 }
 
 export async function playGame(config: GameConfig, player: Player, logger: pino.Logger): Promise<void> {

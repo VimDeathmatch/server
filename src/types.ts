@@ -2,13 +2,15 @@ import * as net from "net";
 import pino from "pino";
 import { EventEmitter } from "events";
 
-import { Stats } from "./score";
-import { Puzzle } from "./puzzles";
+import { Stats } from "./game/score";
+
+// TODO: Why does this require index....
+import { Puzzle } from "./puzzles/index";
 
 export interface BehavorialNode {
     enter(): Promise<void>;
     shouldEnter(players: Player[]): Promise<boolean>;
-    run(): Promise<void>;
+    run(players: Player[]): Promise<void>;
     exit(): Promise<void>;
 }
 

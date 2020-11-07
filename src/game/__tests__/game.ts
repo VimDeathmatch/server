@@ -3,7 +3,7 @@
 
 import pino from "pino";
 
-import { WaitingForPlayersMsg } from "../waiting-for-players";
+import { WaitingForPlayersMsg } from "../behavioral-tree/states/player-join-node";
 import { setNextPromise } from "../../__mocks__/player-join";
 import MockSocket from "../../__mocks__/socket";
 
@@ -14,6 +14,13 @@ import { Game } from "../../types";
 
 const logger = pino({ name: "__tests__/game"});
 
+describe("Game", function() {
+    it("Should fail because you need to have a test....", function() {
+        throw new Error("Please write a game test");
+    });
+});
+
+/*
 function hasWaitingForPlayers(socket: MockSocket) {
     return socket.writes.reduce((acc, msg: string) => {
         return acc || msg.indexOf(WaitingForPlayersMsg) !== -1;
@@ -49,3 +56,4 @@ describe("Game", function() {
     });
 });
 
+*/

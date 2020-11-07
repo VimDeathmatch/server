@@ -2,19 +2,24 @@ import * as net from "net";
 import pino from "pino";
 import { EventEmitter } from "events";
 
-import playerJoin from "./player-join";
-import { GameConfig, Player, Game } from "../types";
+import { BehavorialNode, GameConfig, Player, Game } from "../types";
 import { createPlayer } from "./player";
 import { Puzzle } from "../puzzles/index";
-import waitingForPlayers from "./waiting-for-players";
+
+function wait(ms: number): Promise<void> {
+    return new Promise(res => setTimeout(res, ms));
+}
 
 class GameImpl extends EventEmitter implements Game {
     private logger: pino.Logger;
     private players: Player[];
+    private tree: BehavorialNode;
+    private finished: boolean;
 
-    constructor(private config: GameConfig) {
+    constructor(private config: GameConfig, tree: BehavorialNode) {
         super();
 
+        this.tree = tree;
         this.players = [];
         this.logger = config.logger.child({
             name: "Game",
@@ -54,30 +59,28 @@ class GameImpl extends EventEmitter implements Game {
             return;
         }
 
-        try {
-            const player = createPlayer(conn, this.logger);
-            this.players.push(player);
+        const player = createPlayer(conn, this.logger);
+        player.on("msg", async () => {
+            await wait(16);
+            this.transition();
+        });
+        player.on("end", () => {
+            this.transition();
+        });
+        player.on("send-failed", () => { });
 
-            // TODO(v2) ready message should come with name
-            await playerJoin(player);
-            await waitingForPlayers(player);
+        this.transition();
+    }
 
-            player.on("msg", (type, msg) => this[type](msg));
-            player.on("end", () => { });
-            player.on("send-failed", () => { });
-
-        } catch (e) {
-            /*
-            // TODO(v2)
-            this.emit("needsPlayers");
-            */
-            this.logger.error(e, "Player unable to join", {
-                players: this.players
-            });
+    private async transition() {
+        if (this.finished) {
+            return;
         }
+
+        this.finished = !await this.tree.shouldEnter(this.players);
     }
 }
 
-export function createGame(config: GameConfig) {
-    return new GameImpl(config);
+export function createGame(config: GameConfig, tree: BehavorialNode) {
+    return new GameImpl(config, tree);
 };
