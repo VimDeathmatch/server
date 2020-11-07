@@ -1,10 +1,10 @@
-import { BehavorialNode } from "../../types";
+import { BehavorialNode } from "../../../types";
 
 import SequenceNode from "../sequence";
 
 import {
     TurnOnNode,
-} from "../../__mocks__/bnode";
+} from "../../../__mocks__/bnode";
 
 describe("Sequence Node", function() {
 

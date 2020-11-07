@@ -1,10 +1,10 @@
-import { BehavorialNode } from "../../types";
+import { BehavorialNode } from "../../../types";
 
 import SelectorNode from "../selector";
 
 import {
     OneShotNode,
-} from "../../__mocks__/bnode";
+} from "../../../__mocks__/bnode";
 
 describe("Selector Node", function() {
 

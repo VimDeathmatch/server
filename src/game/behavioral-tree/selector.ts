@@ -1,7 +1,7 @@
 import {
     BehavorialNode,
     Player,
-} from "../types";
+} from "../../types";
 
 export default class SelectorNode implements BehavorialNode {
     private currentNode: BehavorialNode = null;

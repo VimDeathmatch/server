@@ -1,7 +1,7 @@
 import {
     BehavorialNode,
     Player,
-} from "../types";
+} from "../../types";
 
 export default class SequenceNode implements BehavorialNode {
     private index: number;
