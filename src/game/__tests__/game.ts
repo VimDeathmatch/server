@@ -26,6 +26,7 @@ describe("Game", function() {
             logger,
             puzzle: {start, end, filetype},
             maxPlayTime: 30000,
+            maxPlayers: 2,
         });
     }
 

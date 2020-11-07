@@ -48,6 +48,7 @@ export interface Player extends EventEmitter {
 
 // TODO: What is the name of this thing?
 export type GameConfig = {
+    maxPlayers: number;
     puzzle: Puzzle;
     maxPlayTime: number;
     logger: pino.Logger;
@@ -61,7 +62,5 @@ export interface Game extends EventEmitter {
     getLogger(): pino.Logger;
     getMaxPlayTime(): number;
 };
-
-export type GameStateFunction = (config: GameConfig, players: Player[]) => Promise<void>;
 
 

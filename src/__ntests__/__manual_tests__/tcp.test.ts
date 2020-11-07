@@ -6,7 +6,7 @@ import {
 
 import {
     createMessage
-} from "../../handle-messages";
+} from "../../networking/handle-messages";
 
 const client = new net.Socket();
 

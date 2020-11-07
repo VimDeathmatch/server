@@ -1,4 +1,4 @@
-import { Logger } from "./logger";
+import pino from "pino";
 
 type ParseReturn = [boolean, number, string];
 
@@ -30,11 +30,9 @@ export default class HandleMsg {
     public msgLength = 0;
     public state: State = State.WaitingForLength;
 
-    private logger: Logger;
-    constructor(logger?: Logger) {
-        const getState = () => [this.state, this.msgLength, this.msgType];
-        this.logger = logger && logger.child(getState, "HandleMsg") ||
-           new Logger(getState, {className: "HandleMsg"});
+    private logger: pino.Logger;
+    constructor(logger: pino.Logger) {
+        this.logger = logger.child({name: "handle-message"});
     }
 
     parse(data: string): ParsedMessage {
@@ -55,7 +53,7 @@ export default class HandleMsg {
                 currentIdx += consumed;
 
                 if (found) {
-                    this.logger.info("parse", +parsedString);
+                    this.logger.info("WaitingForLength#complete", +parsedString);
                     this.msgLength = +parsedString;
                     this.state = State.WaitingForType;
                 }
@@ -71,7 +69,7 @@ export default class HandleMsg {
                 currentIdx += consumed;
 
                 if (found) {
-                    this.logger.info("parse", parsedString);
+                    this.logger.info("WaitingForType#complete", parsedString);
 
                     this.msgType = parsedString;
                     this.state = State.WaitingForData;
@@ -88,7 +86,7 @@ export default class HandleMsg {
                 currentIdx += consumed;
 
                 if (found) {
-                    this.logger.info("parse", parsedString);
+                    this.logger.info("WaitingForData#complete", parsedString);
                     this.state = State.WaitingForLength;
                     msg = parsedString;
                     completed = true;

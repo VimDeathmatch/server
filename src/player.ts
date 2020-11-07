@@ -1,7 +1,7 @@
 import * as net from "net";
 import pino from "pino";
 
-import HandleMsg, { createMessage } from "./handle-messages";
+import HandleMsg, { createMessage } from "./networking/handle-messages";
 import { Stats } from "./score";
 import { Logger, getNewId } from "./logger";
 import { EventEmitter } from "events";
@@ -27,7 +27,7 @@ export class PlayerImpl extends EventEmitter implements Player {
         super();
         this.stats = new Stats();
         this.conn = conn;
-        this.parser =  new HandleMsg();
+        this.parser = new HandleMsg(logger);
         this.failureMessage = null;
         this.logger = logger.child({ name: "Player" });
         this.awaitingCommands = [];

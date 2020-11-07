@@ -1,4 +1,4 @@
-import HandleMsg, {State} from "../handle-messages";
+import HandleMsg, {State} from "../networking/handle-messages";
 
 describe("HandleMsg", function() {
     it("parse out an empty message", function() {

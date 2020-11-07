@@ -2,7 +2,7 @@ import * as net from "net"
 
 import {
     createMessage,
-} from "./handle-messages"
+} from "./networking/handle-messages"
 
 const maxRTTS = 5;
 const RETEST_TIME_INTERVAL = 20000;

@@ -4,7 +4,7 @@ import {
     BehavorialNode,
     Player,
     GameConfig,
-} from "../types";
+} from "../../types";
 
 export default class PlayerJoinNode implements BehavorialNode {
     private logger: pino.Logger;
@@ -16,7 +16,13 @@ export default class PlayerJoinNode implements BehavorialNode {
     async enter(): Promise<void> { }
 
     async shouldEnter(players: Player[]): Promise<boolean> {
-        return players.some(player => !player.ready);
+        const shouldEnters = players.map(player => player.ready);
+
+        this.logger.info("should enter playerJoin node", {
+            shouldEnters,
+        });
+
+        return shouldEnters.some(x => !x);
     }
 
     async run(): Promise<void> {

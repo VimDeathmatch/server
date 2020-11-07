@@ -2,29 +2,18 @@ import * as net from "net";
 import pino from "pino";
 import { EventEmitter } from "events";
 
-import states from "./states";
 import playerJoin from "./player-join";
-import { GameConfig, Player, Game, GameStateFunction } from "../types";
+import { GameConfig, Player, Game } from "../types";
 import { createPlayer } from "../player";
 import { Puzzle } from "../puzzles/index";
 import waitingForPlayers from "./waiting-for-players";
 
-enum GameState {
-    NeedPlayers,
-    Gaming,
-    Finished,
-}
-
 class GameImpl extends EventEmitter implements Game {
     private logger: pino.Logger;
     private players: Player[];
-    private state: GameState;
-    private states: {[key: string]: GameStateFunction};
 
     constructor(private config: GameConfig) {
         super();
-        this.states = {
-        };
 
         this.players = [];
         this.logger = config.logger.child({
@@ -44,26 +33,16 @@ class GameImpl extends EventEmitter implements Game {
         };
     }
 
-    getPuzzle() {
+    getPuzzle(): Puzzle {
         return this.config.puzzle;
-    }
-
-    async setState(state: GameState): Promise<void> {
-        this.state = state;
-
-        // await this.states[state](this, this.players);
     }
 
     getLogger(): pino.Logger {
         return this.config.logger;
     }
 
-    getState(): GameState {
-        return this.state;
-    }
-
     gameHasEnoughPlayers(): boolean {
-        return this.players.length === 2;
+        return this.players.length === this.config.maxPlayers;
     }
 
     async addPlayer(conn: net.Socket) {
@@ -95,25 +74,7 @@ class GameImpl extends EventEmitter implements Game {
             this.logger.error(e, "Player unable to join", {
                 players: this.players
             });
-
-            await this.finishGame();
         }
-
-        await this.nextState();
-    }
-
-    // 5 potential states?
-    private async nextState() {
-        switch (this.getState()) {
-            case GameState.NeedPlayers:
-                if (this.gameHasEnoughPlayers()) {
-                    await this.setState(GameState.Gaming);
-                }
-                break;
-        }
-    }
-
-    private async finishGame() {
     }
 }
 
