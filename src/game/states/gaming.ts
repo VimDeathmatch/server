@@ -1,7 +1,7 @@
 import pino from "pino";
 
 import { Player, GameConfig } from "../../types";
-import { PlayerStats } from "../../score";
+import { PlayerStats } from "../score";
 
 // send the game message
 //        -> some amount of time to complete it.

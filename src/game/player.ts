@@ -1,11 +1,10 @@
 import * as net from "net";
 import pino from "pino";
 
-import HandleMsg, { createMessage } from "./networking/handle-messages";
+import HandleMsg, { createMessage } from "../networking/handle-messages";
 import { Stats } from "./score";
-import { Logger, getNewId } from "./logger";
 import { EventEmitter } from "events";
-import { AwaitCommmands, Player, PlayerObject } from "./types";
+import { AwaitCommmands, Player } from "../types";
 
 export class PlayerImpl extends EventEmitter implements Player {
     private parser: HandleMsg;
@@ -65,17 +64,15 @@ export class PlayerImpl extends EventEmitter implements Player {
     // I like this,
     // but I am not going to do it yet...
     send(typeOrMsg: string, message: string | object): Promise<void> {
-        const messageId = getNewId();
         const msg = message ? createMessage(typeOrMsg, message) : typeOrMsg;
 
-        this.logger.info("send", {messageId, msg});
+        this.logger.info("send", {msg});
 
         return new Promise((res, rej) => {
             if (this.conn.destroyed || this.disconnected) {
                 const item = {
                     reason: "Could not send message",
                     msg,
-                    messageId,
                     destroyed: this.conn.destroyed,
                 };
                 this.emit("send-failed", item);

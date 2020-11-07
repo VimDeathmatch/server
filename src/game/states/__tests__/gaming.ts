@@ -2,7 +2,6 @@ import pino from "pino";
 
 import gaming from "../gaming";
 import MockPlayer from "../../../__mocks__/player";
-import { Player } from "../../../types";
 
 const config = {
     logger: pino({ name: "test__gaming" }),
@@ -12,6 +11,7 @@ const config = {
         filetype: "ts",
     },
     maxPlayTime: 30000,
+    maxPlayers: 2,
 }
 
 describe("play game state", function() {

@@ -1,4 +1,4 @@
-import now from "./now";
+import now from "../now";
 
 export function keyStrokeScore(keysPressed: string[]) {
     return 10000 - 10000 * Math.min(keysPressed.length / 30, 1);

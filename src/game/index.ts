@@ -4,7 +4,7 @@ import { EventEmitter } from "events";
 
 import playerJoin from "./player-join";
 import { GameConfig, Player, Game } from "../types";
-import { createPlayer } from "../player";
+import { createPlayer } from "./player";
 import { Puzzle } from "../puzzles/index";
 import waitingForPlayers from "./waiting-for-players";
 

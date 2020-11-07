@@ -2,7 +2,7 @@ import pino from "pino";
 
 import MockSocket from "../../__mocks__/socket";
 
-import { createPlayer } from "../../player";
+import { createPlayer } from "../player";
 import { createMessage } from "../../networking/handle-messages";
 import playerJoin from "../player-join";
 

@@ -2,8 +2,8 @@ import * as net from "net";
 import { EventEmitter } from "events";
 
 import { AwaitCommmands, Player, PlayerObject } from "../types";
-import { PlayerImpl } from "../player";
-import { Stats } from "../score";
+import { PlayerImpl } from "../game/player";
+import { Stats } from "../game/score";
 
 export default class MockPlayer extends EventEmitter implements Player {
     id: number;
