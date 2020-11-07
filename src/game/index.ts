@@ -4,29 +4,10 @@ import { EventEmitter } from "events";
 
 import states from "./states";
 import playerJoin from "./player-join";
-import { Player, Game, GameStateFunction } from "../types";
+import { GameConfig, Player, Game, GameStateFunction } from "../types";
 import { createPlayer } from "../player";
-import { Puzzle } from "../puzzles";
+import { Puzzle } from "../puzzles/index";
 import waitingForPlayers from "./waiting-for-players";
-import { PlayerStats } from "../score";
-
-export const READY_COMMAND_TIMEOUT = 5000;
-const NO_READY_COMMAND_MSG = `Did not receive a ready command within ${READY_COMMAND_TIMEOUT / 1000} seconds of connection.`;
-export const START_COMMAND_ACCEPT_TIMEOUT = 5000;
-const START_COMMAND_ACCEPT_MSG = `Was unable to send a start game command.`;
-const GAME_FAILED_TO_START = "The game has failed to start due to the other player";
-
-function padMessage(message: string[]): string[] {
-    message.unshift("");
-    message.unshift("");
-    message.push("");
-    message.push("");
-    return message;
-}
-
-// Action comes in ->
-//   * need more players -> start game
-//                       -> error state
 
 enum GameState {
     NeedPlayers,
@@ -41,13 +22,13 @@ class GameImpl extends EventEmitter implements Game {
     private states: {[key: string]: GameStateFunction};
     private puzzle: Puzzle;
 
-    constructor(puzzle: Puzzle, logger: pino.Logger) {
+    constructor(puzzle: Puzzle, private gameConfig: GameConfig) {
         super();
         this.states = {
         };
 
         this.players = [];
-        this.logger = logger.child({
+        this.logger = gameConfig.logger.child({
             name: "Game",
         });
         this.puzzle = puzzle;
@@ -56,6 +37,13 @@ class GameImpl extends EventEmitter implements Game {
     getMaxPlayTime(): number {
         // shoutout asbjorn
         return 42069;
+    }
+
+    getConfig(): GameConfig {
+        return {
+            ...this.gameConfig,
+            logger: this.logger,
+        };
     }
 
     getPuzzle() {
@@ -126,6 +114,6 @@ class GameImpl extends EventEmitter implements Game {
     }
 }
 
-export function createGame(puzzle: Puzzle, logger: pino.Logger) {
-    return new GameImpl(puzzle, logger);
+export function createGame(puzzle: Puzzle, config: GameConfig) {
+    return new GameImpl(puzzle, config);
 };

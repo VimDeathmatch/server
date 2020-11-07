@@ -1,5 +1,5 @@
 import { Puzzle } from "../../puzzles";
-import MockSocket from "./mock-socket";
+import MockSocket from "./socket";
 import { createMessage } from "../../handle-messages";
 import {
     createGame as cG,

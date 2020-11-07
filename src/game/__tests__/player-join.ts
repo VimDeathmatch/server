@@ -1,6 +1,6 @@
 import pino from "pino";
 
-import MockSocket from "./__helpers__/mock-socket";
+import MockSocket from "../../__mocks__/socket";
 
 import { createPlayer } from "../../player";
 import { createMessage } from "../../handle-messages";

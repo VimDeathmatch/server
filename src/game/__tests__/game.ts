@@ -4,8 +4,8 @@
 import pino from "pino";
 
 import { WaitingForPlayersMsg } from "../waiting-for-players";
-import { setNextPromise } from "./__mocks__/player-join";
-import MockSocket from "./__helpers__/mock-socket";
+import { setNextPromise } from "../../__mocks__/player-join";
+import MockSocket from "../../__mocks__/socket";
 
 // TODO: How to figure this out.  I don't want to have to specify the index
 import { createGame } from "../index";
@@ -22,7 +22,10 @@ function hasWaitingForPlayers(socket: MockSocket) {
 
 describe("Game", function() {
     function createTestGame(start = [""], end = [""], filetype = "javascript"): Game {
-        return createGame({start, end, filetype}, logger);
+        return createGame({start, end, filetype}, {
+            logger,
+            maxPlayTime: 30000,
+        });
     }
 
     it("A player should be able to join", async function() {

@@ -5,13 +5,7 @@ import HandleMsg, { createMessage } from "./handle-messages";
 import { Stats } from "./score";
 import { Logger, getNewId } from "./logger";
 import { EventEmitter } from "events";
-import { Player, PlayerObject } from "./types";
-
-type AwaitCommmands = {
-    res: (arg: [string, string]) => void,
-    rej: (e: Error) => void,
-    type: string
-}
+import { AwaitCommmands, Player, PlayerObject } from "./types";
 
 export class PlayerImpl extends EventEmitter implements Player {
     private parser: HandleMsg;
@@ -70,7 +64,7 @@ export class PlayerImpl extends EventEmitter implements Player {
 
     // I like this,
     // but I am not going to do it yet...
-    send(typeOrMsg: string, message?: string | object): Promise<void> {
+    send(typeOrMsg: string, message: string | object): Promise<void> {
         const messageId = getNewId();
         const msg = message ? createMessage(typeOrMsg, message) : typeOrMsg;
 

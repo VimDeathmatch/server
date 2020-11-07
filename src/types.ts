@@ -16,6 +16,12 @@ export type PlayerObject = {
     stats: Stats,
 }
 
+export type AwaitCommmands = {
+    res: (arg: [string, string]) => void,
+    rej: (e: Error) => void,
+    type: string
+}
+
 export interface Player extends EventEmitter {
     id: number;
     conn: net.Socket;
@@ -28,12 +34,20 @@ export interface Player extends EventEmitter {
     stats: Stats;
     failureMessage: string | null;
 
-    send(typeOrMsg: string, message?: string | object): Promise<void>;
+    send(typeOrMsg: string, message: string | object): Promise<void>;
     toObj(): PlayerObject;
     getNextCommand(msgType: string): Promise<[string, string]>;
 }
 
+// TODO: What is the name of this thing?
+export type GameConfig = {
+    puzzle: Puzzle;
+    maxPlayTime: number;
+    logger: pino.Logger;
+}
+
 export interface Game extends EventEmitter {
+    getConfig(): GameConfig;
     gameHasEnoughPlayers(): boolean;
     addPlayer(conn: net.Socket): Promise<void>;
     getPuzzle(): Puzzle;
@@ -41,6 +55,6 @@ export interface Game extends EventEmitter {
     getMaxPlayTime(): number;
 };
 
-export type GameStateFunction = (game: Game, players: Player[]) => Promise<void>;
+export type GameStateFunction = (config: GameConfig, players: Player[]) => Promise<void>;
 
 
