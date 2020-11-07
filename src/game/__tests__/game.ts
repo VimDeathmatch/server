@@ -22,8 +22,9 @@ function hasWaitingForPlayers(socket: MockSocket) {
 
 describe("Game", function() {
     function createTestGame(start = [""], end = [""], filetype = "javascript"): Game {
-        return createGame({start, end, filetype}, {
+        return createGame({
             logger,
+            puzzle: {start, end, filetype},
             maxPlayTime: 30000,
         });
     }

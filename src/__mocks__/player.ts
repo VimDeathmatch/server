@@ -5,7 +5,7 @@ import { AwaitCommmands, Player, PlayerObject } from "../types";
 import { PlayerImpl } from "../player";
 import { Stats } from "../score";
 
-export class MockPlayer extends EventEmitter implements Player {
+export default class MockPlayer extends EventEmitter implements Player {
     id: number;
     conn: net.Socket;
     ready: boolean;
@@ -19,6 +19,12 @@ export class MockPlayer extends EventEmitter implements Player {
 
     sentMessages: [string, string | object][];
     awaitingCommands: AwaitCommmands[];
+
+    constructor() {
+        super();
+        this.sentMessages = [];
+        this.awaitingCommands = [];
+    }
 
     getMessage(type: string): [string, string | object] | null {
         let cmd: [string, string | object] | null = null;

@@ -20,18 +20,16 @@ class GameImpl extends EventEmitter implements Game {
     private players: Player[];
     private state: GameState;
     private states: {[key: string]: GameStateFunction};
-    private puzzle: Puzzle;
 
-    constructor(puzzle: Puzzle, private gameConfig: GameConfig) {
+    constructor(private config: GameConfig) {
         super();
         this.states = {
         };
 
         this.players = [];
-        this.logger = gameConfig.logger.child({
+        this.logger = config.logger.child({
             name: "Game",
         });
-        this.puzzle = puzzle;
     }
 
     getMaxPlayTime(): number {
@@ -41,18 +39,23 @@ class GameImpl extends EventEmitter implements Game {
 
     getConfig(): GameConfig {
         return {
-            ...this.gameConfig,
+            ...this.config,
             logger: this.logger,
         };
     }
 
     getPuzzle() {
-        return this.puzzle;
+        return this.config.puzzle;
     }
 
     async setState(state: GameState): Promise<void> {
         this.state = state;
-        await this.states[state](this, this.players);
+
+        // await this.states[state](this, this.players);
+    }
+
+    getLogger(): pino.Logger {
+        return this.config.logger;
     }
 
     getState(): GameState {
@@ -114,6 +117,6 @@ class GameImpl extends EventEmitter implements Game {
     }
 }
 
-export function createGame(puzzle: Puzzle, config: GameConfig) {
-    return new GameImpl(puzzle, config);
+export function createGame(config: GameConfig) {
+    return new GameImpl(config);
 };

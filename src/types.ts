@@ -5,6 +5,13 @@ import { EventEmitter } from "events";
 import { Stats } from "./score";
 import { Puzzle } from "./puzzles";
 
+export interface BehavorialNode {
+    enter(): Promise<void>;
+    shouldEnter(players: Player[]): Promise<boolean>;
+    run(): Promise<void>;
+    exit(): Promise<void>;
+}
+
 export type PlayerObject = {
     id: number,
     ready: boolean,
