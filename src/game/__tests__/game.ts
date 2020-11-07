@@ -1,5 +1,9 @@
+// TODO(v1): test to many players
+// TODO(v1): waitForPlayers
+
 import pino from "pino";
 
+import { WaitingForPlayersMsg } from "../waiting-for-players";
 import { setNextPromise } from "./__mocks__/player-join";
 import MockSocket from "./__helpers__/mock-socket";
 
@@ -9,6 +13,12 @@ import { createGame } from "../index";
 import { Game } from "../../types";
 
 const logger = pino({ name: "__tests__/game"});
+
+function hasWaitingForPlayers(socket: MockSocket) {
+    return socket.writes.reduce((acc, msg: string) => {
+        return acc || msg.indexOf(WaitingForPlayersMsg) !== -1;
+    }, false);
+}
 
 describe("Game", function() {
     function createTestGame(start = [""], end = [""], filetype = "javascript"): Game {
@@ -29,6 +39,8 @@ describe("Game", function() {
         await game.addPlayer(p2 as any);
 
         expect(game.gameHasEnoughPlayers()).toEqual(true);
+        expect(hasWaitingForPlayers(p1)).toEqual(true);
+        expect(hasWaitingForPlayers(p2)).toEqual(true);
     });
 });
 

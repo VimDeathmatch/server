@@ -7,6 +7,12 @@ import { Logger, getNewId } from "./logger";
 import { EventEmitter } from "events";
 import { Player, PlayerObject } from "./types";
 
+type AwaitCommmands = {
+    res: (arg: [string, string]) => void,
+    rej: (e: Error) => void,
+    type: string
+}
+
 export class PlayerImpl extends EventEmitter implements Player {
     private parser: HandleMsg;
     public id: number;
@@ -21,6 +27,7 @@ export class PlayerImpl extends EventEmitter implements Player {
     public failureMessage: string | null;
 
     private logger: pino.Logger;
+    private awaitingCommands: AwaitCommmands[];
 
     constructor(conn: net.Socket, logger: pino.Logger) {
         super();
@@ -29,6 +36,7 @@ export class PlayerImpl extends EventEmitter implements Player {
         this.parser =  new HandleMsg();
         this.failureMessage = null;
         this.logger = logger.child({ name: "Player" });
+        this.awaitingCommands = [];
 
         conn.on("data", (d) => {
             const {
@@ -44,6 +52,13 @@ export class PlayerImpl extends EventEmitter implements Player {
                     message,
                 });
                 this.emit("msg", type, message);
+
+                for (let i = this.awaitingCommands.length - 1; i >= 0; --i) {
+                    if (this.awaitingCommands[i].type === type) {
+                        const cmd = this.awaitingCommands.splice(i, 1)[0];
+                        cmd.res([type, message]);
+                    }
+                }
             }
         });
 
@@ -98,6 +113,20 @@ export class PlayerImpl extends EventEmitter implements Player {
             disconnected: this.disconnected,
             stats: this.stats,
         };
+    }
+
+    getNextCommand(type: string): Promise<[string, string]> {
+        let res: (arg: [string, string]) => void;
+        let rej: (e: Error) => void;
+
+        const out: Promise<[string, string]> = new Promise((r, e) => {
+            res = r;
+            rej = e;
+        });
+
+        this.awaitingCommands.push({res, rej, type});
+
+        return out;
     }
 }
 
