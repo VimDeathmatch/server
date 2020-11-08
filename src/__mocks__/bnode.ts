@@ -1,12 +1,12 @@
 import { BehavorialNode, Player } from "../types";
 
-export function spyOn(node: BehavorialNode): BehavorialNode {
+export function spyOn<T extends BehavorialNode>(node: BehavorialNode): T {
     jest.spyOn(node, "run");
     jest.spyOn(node, "shouldEnter");
     jest.spyOn(node, "enter");
     jest.spyOn(node, "exit");
 
-    return node;
+    return node as any;
 }
 
 export class OneShotNode implements BehavorialNode {
@@ -28,7 +28,7 @@ export class OneShotNode implements BehavorialNode {
 }
 
 export class TurnOnNode implements BehavorialNode {
-    constructor(public id: number) {}
+    constructor(public id: number = 0) {}
 
     private returnEnter = false;
 

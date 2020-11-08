@@ -8,13 +8,11 @@
         "stopOnEntry": true,
         "console": "integratedTerminal",
         "program": "${workspaceRoot}/node_modules/.bin/jest",
-        "args": ["player-join"],
+        "args": ["${file}"],
+        "smartStep": true,
         "cwd": "${workspaceRoot}"
       }
-    },
-    "foobar": {}
+    }
   }
 }
-
-
 

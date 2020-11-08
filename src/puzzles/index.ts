@@ -27,8 +27,6 @@ const files: Puzzle[] = fs.readdirSync(__dirname).
     }).
     filter(x => x);
 
-console.log("FILES");
-
 function stripFunction(fn: Function) {
     const functionContents = fn.toString();
     return functionContents.

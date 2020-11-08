@@ -50,7 +50,7 @@ class GameImpl extends EventEmitter implements Game {
         return this.players.length === this.config.maxPlayers;
     }
 
-    async addPlayer(conn: net.Socket) {
+    async addPlayer(conn: net.Socket): Promise<void> {
         if (this.gameHasEnoughPlayers()) {
             this.logger.fatal("GameRunner is adding players to a full game.", {
                 players: this.players
@@ -60,16 +60,15 @@ class GameImpl extends EventEmitter implements Game {
         }
 
         const player = createPlayer(conn, this.logger);
+        await this.transition();
+
         player.on("msg", async () => {
-            await wait(16);
             this.transition();
         });
         player.on("end", () => {
             this.transition();
         });
         player.on("send-failed", () => { });
-
-        this.transition();
     }
 
     private async transition() {
@@ -77,7 +76,15 @@ class GameImpl extends EventEmitter implements Game {
             return;
         }
 
-        this.finished = !await this.tree.shouldEnter(this.players);
+        // TODO: Make a one time sequence tree
+        const shouldEnter = await this.tree.shouldEnter(this.players);
+
+        if (!shouldEnter) {
+            this.finished = true;
+            return;
+        }
+
+        await this.tree.run(this.players);
     }
 }
 

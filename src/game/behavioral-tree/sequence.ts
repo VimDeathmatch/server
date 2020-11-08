@@ -5,11 +5,11 @@ import {
 
 export default class SequenceNode implements BehavorialNode {
     private index: number;
-    private currentNode: BehavorialNode | null;
+    private lastRanNode: BehavorialNode | null;
 
     constructor(private nodes: BehavorialNode[]) {
         this.index = 0;
-        this.currentNode = null;
+        this.lastRanNode = null;
     }
 
     async enter(): Promise<void> {
@@ -20,32 +20,56 @@ export default class SequenceNode implements BehavorialNode {
         return this.nodes[++this.index];
     }
 
+    private hasNodesLeft(): boolean {
+        return this.nodes.length > this.index;
+    }
+
     private async attemptToEnter(node: BehavorialNode, players: Player[]): Promise<boolean> {
         const shouldEnter = await node.shouldEnter(players);
         if (shouldEnter) {
-            this.currentNode = node;
-            await this.currentNode.enter();
+            this.lastRanNode = node;
+            await this.lastRanNode.enter();
         }
         return shouldEnter;
+    }
+
+    private getCurrentNode(): BehavorialNode {
+        return this.nodes[this.index];
     }
 
     async shouldEnter(players: Player[]): Promise<boolean> {
-        if (this.currentNode === null) {
-            return this.attemptToEnter(this.nodes[0], players);
+        if (this.lastRanNode === null) {
+            return this.attemptToEnter(this.getCurrentNode(), players);
         }
 
-        const shouldEnter = await this.currentNode.shouldEnter(players);
-        if (!shouldEnter) {
-            await this.currentNode.exit();
-            this.currentNode = null;
-            return this.attemptToEnter(this.getNextNode(), players);
-        }
+        let shouldEnter = false;
+        let previous: BehavorialNode | null = this.lastRanNode;
+
+        do {
+            shouldEnter = await this.getCurrentNode().shouldEnter(players);
+            if (!shouldEnter) {
+                if (previous) {
+                    await previous.exit();
+                    previous = null;
+                }
+                this.getNextNode();
+            }
+
+            else if (shouldEnter) {
+                if (previous === null) {
+                    await this.getCurrentNode().enter();
+                }
+
+                this.lastRanNode = this.getCurrentNode();
+            }
+
+        } while (!shouldEnter && this.hasNodesLeft());
 
         return shouldEnter;
     }
 
-    async run(): Promise<void> {
-        return this.currentNode.run();
+    async run(players: Player[]): Promise<void> {
+        return this.lastRanNode.run(players);
     }
 
     async exit(): Promise<void> { }

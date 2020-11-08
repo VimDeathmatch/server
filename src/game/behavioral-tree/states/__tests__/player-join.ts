@@ -1,25 +1,13 @@
 import pino from "pino";
 
-import MockSocket from "../../../../__mocks__/socket";
+import MockSocket, { trashSocket, readySocket } from "../../../../__mocks__/socket";
 
 import { createPlayer } from "../../../player";
-import { createMessage } from "../../../../networking/handle-messages";
 import PlayerJoinNode, { playerJoin } from "../player-join-node";
 
 const logger = pino({name: "playerJoin.test"});
-const readyMessage = createMessage("ready", "just a tird, Mr AltFYeah");
-const trashMessage = createMessage("trash", "messsage");
-
 function wait(ms: number): Promise<void> {
     return new Promise(res => setTimeout(res, ms));
-}
-
-async function readySocket(socket: MockSocket) {
-    await socket.callbacks["data"](readyMessage);
-}
-
-async function trashSocket(socket: MockSocket) {
-    await socket.callbacks["data"](trashMessage);
 }
 
 describe("PlayerJoinNode", function() {
