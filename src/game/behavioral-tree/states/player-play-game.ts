@@ -26,6 +26,7 @@ export async function playGame(config: GameConfig, player: Player, logger: pino.
             wait(config.maxPlayTime).then(() => null),
         ]);
 
+        console.log("playGame");
         if (results === null) {
             logger.warn("Player has timedout", {player, config});
             player.timedout = true;

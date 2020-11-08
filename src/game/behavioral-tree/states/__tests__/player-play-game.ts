@@ -1,6 +1,7 @@
 import pino from "pino";
 
-import MockSocket, { trashSocket, readySocket } from "../../../../__mocks__/socket";
+import MockSocket, { trashSocket, readySocket, sendSocketMessage } from "../../../../__mocks__/socket";
+import { runPendingPromises } from "../../../../__mocks__/promise";
 
 import { createPlayer } from "../../../player";
 import PlayGameNode, { playGame } from "../player-play-game";
@@ -77,6 +78,80 @@ describe("PlayGameNode", function() {
     });
 });
 
-
 describe("playGame", function() {
+    jest.useFakeTimers();
+
+    //export async function playGame(config: GameConfig, player: Player, logger: pino.Logger): Promise<void> {
+    it("should timeout", async function() {
+        const config = createGameConfig({ });
+        const socket = new MockSocket();
+        let player = createPlayer(socket as any, logger);
+
+        jest.spyOn(player, "send");
+        const pgn = new PlayGameNode(createGameConfig());
+        await pgn.shouldEnter([player]);
+        await pgn.run([player]);
+
+        expect(player.send).toHaveBeenCalledTimes(1);
+
+        jest.advanceTimersByTime(config.maxPlayTime - 100);
+        expect(player.send).toHaveBeenCalledTimes(1);
+
+        jest.advanceTimersByTime(100);
+        await runPendingPromises();
+
+        console.log("expect");
+        expect(player.timedout).toEqual(true);
+    });
+
+    it("should cause player failure due to stats format.", async function() {
+        const config = createGameConfig({ });
+        const socket = new MockSocket();
+        let player = createPlayer(socket as any, logger);
+
+        jest.spyOn(player, "send");
+        const pgn = new PlayGameNode(createGameConfig());
+        await pgn.shouldEnter([player]);
+        await pgn.run([player]);
+
+        expect(player.send).toHaveBeenCalledTimes(1);
+        await sendSocketMessage(socket, "finished", "{}");
+        await runPendingPromises();
+
+        expect(player.failed).toEqual(true);
+    });
+
+    it("should cause player failure due to stats format.", async function() {
+        const config = createGameConfig({ });
+        const socket = new MockSocket();
+        let player = createPlayer(socket as any, logger);
+
+        jest.spyOn(player, "send");
+        const pgn = new PlayGameNode(createGameConfig());
+        await pgn.shouldEnter([player]);
+        await pgn.run([player]);
+
+        expect(player.send).toHaveBeenCalledTimes(1);
+        await sendSocketMessage(socket, "finished", "{}");
+        await runPendingPromises();
+
+        expect(player.failed).toEqual(true);
+    });
+
+    it("should successfully complete a game.", async function() {
+        const config = createGameConfig({ });
+        const socket = new MockSocket();
+        let player = createPlayer(socket as any, logger);
+
+        jest.spyOn(player, "send");
+        const pgn = new PlayGameNode(createGameConfig());
+        await pgn.shouldEnter([player]);
+        await pgn.run([player]);
+
+        expect(player.send).toHaveBeenCalledTimes(1);
+        await sendSocketMessage(socket, "finished", {keys: ["a", "b", "c"], undoCount: 0});
+        await runPendingPromises();
+
+        expect(player.finished).toEqual(true);
+    });
 });
