@@ -33,7 +33,7 @@ export default class SelectorNode implements BehavorialNode {
         return shouldEnter;
     }
 
-    async run(players: Player[]): Promise<void> {
+    async run(players: Player[]): Promise<boolean> {
         return this.currentNode.run(players);
     }
 

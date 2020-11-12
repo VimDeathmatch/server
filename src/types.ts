@@ -10,7 +10,7 @@ import { Puzzle } from "./puzzles/index";
 export interface BehavorialNode {
     enter(): Promise<void>;
     shouldEnter(players: Player[]): Promise<boolean>;
-    run(players: Player[]): Promise<void>;
+    run(players: Player[]): Promise<boolean>;
     exit(): Promise<void>;
 }
 

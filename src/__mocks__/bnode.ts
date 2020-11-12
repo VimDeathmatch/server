@@ -20,7 +20,7 @@ export class NeverNode implements BehavorialNode {
 
     async exit(): Promise<void> { }
 
-    async run(): Promise<void> { }
+    async run(): Promise<boolean> { return false; }
 }
 
 export class OneShotNode implements BehavorialNode {
@@ -38,7 +38,7 @@ export class OneShotNode implements BehavorialNode {
 
     async exit(): Promise<void> { }
 
-    async run(): Promise<void> { }
+    async run(): Promise<boolean> { return false; }
 }
 
 export class TurnOnNode implements BehavorialNode {
@@ -58,6 +58,6 @@ export class TurnOnNode implements BehavorialNode {
 
     async exit(): Promise<void> { }
 
-    async run(): Promise<void> { }
+    async run(): Promise<boolean> { return false; }
 }
 

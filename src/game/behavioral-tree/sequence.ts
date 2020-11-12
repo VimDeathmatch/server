@@ -68,7 +68,7 @@ export default class SequenceNode implements BehavorialNode {
         return shouldEnter;
     }
 
-    async run(players: Player[]): Promise<void> {
+    async run(players: Player[]): Promise<boolean> {
         return this.lastRanNode.run(players);
     }
 
