@@ -4,39 +4,46 @@ import SelectorNode from "../selector";
 
 import {
     OneShotNode,
+    NeverNode,
     spyOn,
 } from "../../../__mocks__/bnode";
 
 describe("Selector Node", function() {
 
-    async function testNode(selector: BehavorialNode, node: BehavorialNode) {
-        let shouldEnter = await selector.shouldEnter([]);
-        expect(shouldEnter).toEqual(true);
-        await selector.enter();
-
-        await selector.run([]);
-        expect(node.enter).toHaveBeenCalledTimes(1);
-        expect(node.shouldEnter).toHaveBeenCalledTimes(1);
-        expect(node.exit).toHaveBeenCalledTimes(0);
-        expect(node.run).toHaveBeenCalledTimes(1);
-
-        shouldEnter = await selector.shouldEnter([]);
-        expect(shouldEnter).toEqual(false);
-        expect(node.shouldEnter).toHaveBeenCalledTimes(2);
-        await selector.exit();
-        expect(node.exit).toHaveBeenCalledTimes(1);
-    }
-
     it("should cycle through the nodes and pick the first one.", async function() {
         const n0 = spyOn(new OneShotNode(0));
-        const n1 = spyOn(new OneShotNode(1));
+        const n1 = spyOn(new NeverNode(1));
+        const n2 = spyOn(new OneShotNode(2));
 
-        const nodes = [ n0, n1 ];
+        const nodes = [ n0, n1, n2 ];
         const selector = new SelectorNode(nodes);
 
-        await testNode(selector, n0);
-        expect(n1.shouldEnter).toHaveBeenCalledTimes(0);
-        await testNode(selector, n1);
+        expect(await selector.shouldEnter([])).toEqual(true);
+        await selector.enter();
+        await selector.run([]);
+
+        expect(n0.enter).toHaveBeenCalledTimes(1);
+        expect(n0.shouldEnter).toHaveBeenCalledTimes(1);
+        expect(n0.exit).toHaveBeenCalledTimes(0);
+        expect(n0.run).toHaveBeenCalledTimes(1);
+
+        expect(await selector.shouldEnter([])).toEqual(true);
+        expect(n0.exit).toHaveBeenCalledTimes(1);
+
+        expect(n0.shouldEnter).toHaveBeenCalledTimes(3);
+        expect(n1.shouldEnter).toHaveBeenCalledTimes(1);
+        expect(n2.shouldEnter).toHaveBeenCalledTimes(1);
+        expect(n2.enter).toHaveBeenCalledTimes(1);
+        await selector.run([]);
+
+        expect(n2.run).toHaveBeenCalledTimes(1);
+        expect(n2.exit).toHaveBeenCalledTimes(0);
+
+        expect(await selector.shouldEnter([])).toEqual(false);
+        expect(n2.exit).toHaveBeenCalledTimes(1);
+        expect(n0.shouldEnter).toHaveBeenCalledTimes(4);
+        expect(n1.shouldEnter).toHaveBeenCalledTimes(2);
+        expect(n2.shouldEnter).toHaveBeenCalledTimes(3);
     });
 });
 

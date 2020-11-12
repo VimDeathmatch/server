@@ -47,20 +47,20 @@ export default class SequenceNode implements BehavorialNode {
 
         do {
             shouldEnter = await this.getCurrentNode().shouldEnter(players);
-            if (!shouldEnter) {
-                if (previous) {
-                    await previous.exit();
-                    previous = null;
-                }
-                this.getNextNode();
-            }
-
-            else if (shouldEnter) {
+            if (shouldEnter) {
                 if (previous === null) {
                     await this.getCurrentNode().enter();
                 }
 
                 this.lastRanNode = this.getCurrentNode();
+            }
+
+            else {
+                if (previous) {
+                    await previous.exit();
+                    previous = null;
+                }
+                this.getNextNode();
             }
 
         } while (!shouldEnter && this.hasNodesLeft());

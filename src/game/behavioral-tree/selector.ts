@@ -12,7 +12,13 @@ export default class SelectorNode implements BehavorialNode {
 
     async shouldEnter(players: Player[]): Promise<boolean> {
         if (this.currentNode) {
-            return this.currentNode.shouldEnter(players);
+
+            if (await this.currentNode.shouldEnter(players)) {
+                return true;
+            }
+
+            await this.currentNode.exit();
+            this.currentNode = null;
         }
 
         let shouldEnter = false;
@@ -27,8 +33,8 @@ export default class SelectorNode implements BehavorialNode {
         return shouldEnter;
     }
 
-    async run(): Promise<void> {
-        return this.currentNode.run();
+    async run(players: Player[]): Promise<void> {
+        return this.currentNode.run(players);
     }
 
     async exit(): Promise<void> {

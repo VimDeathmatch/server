@@ -9,6 +9,20 @@ export function spyOn<T extends BehavorialNode>(node: BehavorialNode): T {
     return node as any;
 }
 
+export class NeverNode implements BehavorialNode {
+    constructor(public id: number) {}
+
+    async enter(): Promise<void> { }
+
+    async shouldEnter(players: Player[]): Promise<boolean> {
+        return false;
+    }
+
+    async exit(): Promise<void> { }
+
+    async run(): Promise<void> { }
+}
+
 export class OneShotNode implements BehavorialNode {
     constructor(public id: number) {}
 
