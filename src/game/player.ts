@@ -63,8 +63,8 @@ export class PlayerImpl extends EventEmitter implements Player {
 
     // I like this,
     // but I am not going to do it yet...
-    send(typeOrMsg: string, message: string | object): Promise<void> {
-        const msg = message ? createMessage(typeOrMsg, message) : typeOrMsg;
+    send(typeOrMsg: string, message?: string | object): Promise<void> {
+        let msg = message ? createMessage(typeOrMsg, message) : typeOrMsg;
 
         this.logger.info("send", {msg});
 

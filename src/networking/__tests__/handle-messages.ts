@@ -1,6 +1,6 @@
 import pino from "pino";
 
-import HandleMsg, {State} from "../networking/handle-messages";
+import HandleMsg, {State} from "../handle-messages";
 
 const logger = pino({name: "handle-message__tests__"});
 describe("HandleMsg", function() {

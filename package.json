@@ -21,6 +21,12 @@
     "jest": {
         "preset": "ts-jest",
         "testMatch": ["**/__tests__/**/*.[jt]s?(x)"],
-        "testPathIgnorePatterns": ["node_modules", "__mocks__", "__helpers__"]
+        "testPathIgnorePatterns": ["node_modules", "__mocks__", "__helpers__"],
+        "moduleNameMapper": {
+            "src/(.*)": [ "<rootDir>/src/$1" ],
+            "__helpers__/(.*)": [ "<rootDir>/src/__helpers__/$1" ],
+            "__mocks__/(.*)": [ "<rootDir>/src/__mocks__/$1" ],
+            "game/(.*)": [ "<rootDir>/src/game/$1" ]
+        }
     }
 }

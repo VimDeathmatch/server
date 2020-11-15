@@ -76,7 +76,7 @@ export default class PlayGameNode implements BehavorialNode {
         return !failures && !allFinished;
     }
 
-    async run(players: Player[]): Promise<void> {
+    async run(players: Player[]): Promise<boolean> {
         if (this.gamePlayStarted) {
             return;
         }
@@ -94,6 +94,7 @@ export default class PlayGameNode implements BehavorialNode {
         });
 
         this.gamePlayStarted = true;
+        return false;
     }
 
     async exit(): Promise<void> { }

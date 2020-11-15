@@ -7,6 +7,21 @@ import { Stats } from "./game/score";
 // TODO: Why does this require index....
 import { Puzzle } from "./puzzles/index";
 
+export type DisplayMessage = {
+    left: string[];
+    right?: string[];
+    editable?: boolean;
+};
+
+export type WinningMessage = {
+    failed: boolean;
+    winner: boolean;
+    expired: boolean;
+    scoreDifference: number;
+    keysPressedDifference: number;
+    timeDifference: number;
+};
+
 export interface BehavorialNode {
     enter(): Promise<void>;
     shouldEnter(players: Player[]): Promise<boolean>;
@@ -43,7 +58,7 @@ export interface Player extends EventEmitter {
     stats: Stats;
     failureMessage: string | null;
 
-    send(typeOrMsg: string, message: string | object): Promise<void>;
+    send(typeOrMsg: string, message?: string | object): Promise<void>;
     toObj(): PlayerObject;
     getNextCommand(msgType: string): Promise<[string, string]>;
 }

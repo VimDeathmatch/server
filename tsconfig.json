@@ -1,6 +1,13 @@
 {
     "compilerOptions": {
         "target": "ES2020",
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "baseUrl": ".",
+        "paths": {
+            "src/*": ["src/*"],
+            "game/*": ["src/game/*"],
+            "__mocks__/*": ["src/__mocks__/*"],
+            "__helpers__/*": ["src/__helpers__/*"]
+        }
     }
 }

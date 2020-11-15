@@ -45,6 +45,11 @@ export class TurnOnNode implements BehavorialNode {
     constructor(public id: number = 0) {}
 
     private returnEnter = false;
+    private returnValue = false;
+
+    setRunReturn(enter: boolean) {
+        this.returnValue = enter;
+    }
 
     setShouldEnter(enter: boolean) {
         this.returnEnter = enter;
@@ -58,6 +63,8 @@ export class TurnOnNode implements BehavorialNode {
 
     async exit(): Promise<void> { }
 
-    async run(): Promise<boolean> { return false; }
+    async run(): Promise<boolean> {
+        return this.returnValue;
+    }
 }
 

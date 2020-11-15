@@ -66,7 +66,7 @@ export default class PlayerJoinNode implements BehavorialNode {
         return !failed && (players.length !== this.config.maxPlayers || !ready);
     }
 
-    async run(players: Player[]): Promise<void> {
+    async run(players: Player[]): Promise<boolean> {
         if (this.joinRequests.length === players.length) {
             return;
         }
@@ -75,6 +75,7 @@ export default class PlayerJoinNode implements BehavorialNode {
             this.joinRequests.push(true);
             playerJoin(players[i]);
         }
+        return false;
     }
 
     async exit(): Promise<void> { }
