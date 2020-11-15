@@ -7,12 +7,16 @@ import {
 } from "src/types";
 
 import {
-    getFinishedMessage,
     winnerMessage,
     loserMessage,
     pointMessage,
     getKeypressDifferenceMessage,
     getTimeDifferenceMessage,
+    getTimeoutMessage,
+    getBothTimedout,
+    getOpponentTimedoutMessage,
+    getFailedMessage,
+    getOpponentFailedMessage,
 } from "./finish-message";
 
 
@@ -23,6 +27,42 @@ export function getWinnerAndLoser(p1: Player, p2: Player): [Player, Player] {
     }
     return [p2, p1];
 }
+
+export function failedMessage(p: Player): DisplayMessage {
+    let out: string[];
+    //
+    // If P has failed, we send no message
+    if (p.failed) {
+        out = getFailedMessage();
+    }
+    else {
+        out = getOpponentFailedMessage();
+    }
+
+    return {
+        left: padMessage(out),
+        editable: false
+    };
+}
+
+export function timeoutMessage(p: Player, other: Player): DisplayMessage {
+    let out: string[];
+    if (p.timedout && other.timedout) {
+        out = getBothTimedout();
+    }
+    else if (p.timedout) {
+        out = getTimeoutMessage();
+    }
+    else {
+        out = getOpponentTimedoutMessage();
+    }
+
+    return {
+        left: padMessage(out),
+        editable: false
+    };
+}
+
 
 export function displayEndGameMessage(msg: WinningMessage): DisplayMessage {
     const out: string[] = [];

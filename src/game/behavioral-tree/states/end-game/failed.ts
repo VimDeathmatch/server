@@ -9,25 +9,25 @@ import {
 } from "./run-report-error";
 
 import {
-    timeoutMessage
+    failedMessage,
 } from "./utils";
 
-export class TimedoutNode implements BehavorialNode {
+export class FailedNode implements BehavorialNode {
     constructor(private config: GameConfig) { }
 
     async enter(): Promise<void> { }
 
     async shouldEnter(players: Player[]): Promise<boolean> {
         return players.reduce((acc: boolean, player: Player) => {
-            return acc || player.timedout;
+            return acc || player.failed;
         }, false);
     }
 
     async run(players: Player[]): Promise<boolean> {
         const [p1, p2] = players;
 
-        const p1Message = timeoutMessage(p1, p2);
-        const p2Message = timeoutMessage(p2, p1);
+        const p1Message = failedMessage(p1);
+        const p2Message = failedMessage(p2);
 
         await Promise.all([
             runAndReportFailure(p1, p1Message, this.config.logger),
@@ -40,5 +40,6 @@ export class TimedoutNode implements BehavorialNode {
     async exit(): Promise<void> {
     }
 }
+
 
 

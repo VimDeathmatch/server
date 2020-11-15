@@ -16,7 +16,7 @@ import {
 
 import {
     runAndReportFailure,
-} from "./runAndReportError";
+} from "./run-report-error";
 
 export default class SuccessfulEnding1v1 implements BehavorialNode {
     constructor(private config: GameConfig) { }
