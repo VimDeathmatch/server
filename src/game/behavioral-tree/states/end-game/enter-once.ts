@@ -3,6 +3,7 @@ import {
     Player,
 } from "../../../../types";
 
+//TODO: Ya. this is a terrible place for enter once...
 export default class EnterOnce implements BehavorialNode {
     private entered: boolean;
 
@@ -27,6 +28,10 @@ export default class EnterOnce implements BehavorialNode {
 
     async exit(): Promise<void> {
         this.node.exit();
+    }
+
+    reset() {
+        this.entered = false;
     }
 }
 

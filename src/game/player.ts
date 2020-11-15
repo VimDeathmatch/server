@@ -57,6 +57,7 @@ export class PlayerImpl extends EventEmitter implements Player {
 
         conn.on("end", () => {
             this.logger.info("conn#end", {id: this.id});
+            this.disconnected = true;
             this.emit("end");
         });
     }
@@ -78,6 +79,7 @@ export class PlayerImpl extends EventEmitter implements Player {
                 this.emit("send-failed", item);
                 this.logger.warn("send-failed", item);
 
+                rej(item);
                 return;
             }
 

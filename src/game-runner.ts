@@ -4,8 +4,9 @@ import * as net from "net";
 import pino from "pino";
 
 import { Game } from "./types";
-import { createGame } from "./game";
-import generatePuzzle from "./puzzles";
+
+import { createGame } from "./game/index";
+import generatePuzzle from "./puzzles/index";
 
 export default class GameRunner extends EventEmitter {
     private game?: Game;
@@ -18,9 +19,8 @@ export default class GameRunner extends EventEmitter {
 
     addPlayer(player: net.Socket) {
         this.logger.info("addPlayer");
-        if (!this.game || !this.game.needsPlayers() ||
-            this.game.isFinished() || this.game.hasDisconnection()) {
 
+        if (!this.game || !this.game.needsPlayers() || this.game.isFinished()) {
             this.game = createGame(generatePuzzle(), this.logger);
         }
         this.game.addPlayer(player);

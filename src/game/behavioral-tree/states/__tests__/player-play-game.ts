@@ -100,7 +100,6 @@ describe("playGame", function() {
         jest.advanceTimersByTime(100);
         await runPendingPromises();
 
-        console.log("expect");
         expect(player.timedout).toEqual(true);
     });
 

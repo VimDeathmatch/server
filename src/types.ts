@@ -78,6 +78,7 @@ export interface Game extends EventEmitter {
     getPuzzle(): Puzzle;
     getLogger(): pino.Logger;
     getMaxPlayTime(): number;
+    isFinished(): boolean;
 };
 
 

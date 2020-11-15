@@ -42,6 +42,18 @@ export function getOpponentTimedoutMessage(): string[] {
     ];
 }
 
+export function getDisconnectedMessage(): string[] {
+    return ["You have been disconnected.  Though this will never send, I thought it was nice to say that!"];
+}
+
+export function getOpponentDisconnectedMessage(): string[] {
+    return [
+        "  Your enemy has literally disconnected in fear of you.  You should be proud.",
+        "  At the same time you will never know if you were better than him or not.",
+        "  Sucks to suck.",
+    ];
+}
+
 export function getFailedMessage(): string[] {
     return ["Server Error"];
 }

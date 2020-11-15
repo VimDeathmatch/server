@@ -17,6 +17,8 @@ import {
     getOpponentTimedoutMessage,
     getFailedMessage,
     getOpponentFailedMessage,
+    getDisconnectedMessage,
+    getOpponentDisconnectedMessage,
 } from "./finish-message";
 
 
@@ -26,6 +28,23 @@ export function getWinnerAndLoser(p1: Player, p2: Player): [Player, Player] {
         return [p1, p2];
     }
     return [p2, p1];
+}
+
+export function disconnectedMessage(p: Player): DisplayMessage {
+    let out: string[];
+    //
+    // If P has failed, we send no message
+    if (p.disconnected) {
+        out = getDisconnectedMessage();
+    }
+    else {
+        out = getOpponentDisconnectedMessage();
+    }
+
+    return {
+        left: padMessage(out),
+        editable: false
+    };
 }
 
 export function failedMessage(p: Player): DisplayMessage {

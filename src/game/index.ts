@@ -4,6 +4,8 @@ import { EventEmitter } from "events";
 
 import { BehavorialNode, GameConfig, Player, Game } from "../types";
 import { createPlayer } from "./player";
+//
+// TODO: Get rid of index.
 import { Puzzle } from "../puzzles/index";
 
 function wait(ms: number): Promise<void> {
@@ -65,10 +67,16 @@ class GameImpl extends EventEmitter implements Game {
         player.on("msg", async () => {
             this.transition();
         });
+
         player.on("end", () => {
             this.transition();
         });
+
         player.on("send-failed", () => { });
+    }
+
+    isFinished(): boolean {
+        return this.finished;
     }
 
     private async transition() {
