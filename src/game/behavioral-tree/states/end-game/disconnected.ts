@@ -1,3 +1,5 @@
+import pino from "pino";
+
 import {
     BehavorialNode,
     Player,
@@ -13,7 +15,10 @@ import {
 } from "./utils";
 
 export default class DisconnectedNode implements BehavorialNode {
-    constructor(private config: GameConfig) { }
+    private logger: pino.Logger;
+    constructor(private config: GameConfig) {
+        this.logger = this.config.logger.child({name: "DisconnectNode"});
+    }
 
     async enter(): Promise<void> { }
 
@@ -33,6 +38,8 @@ export default class DisconnectedNode implements BehavorialNode {
             runAndReportFailure(p1, p1Message, this.config.logger),
             runAndReportFailure(p2, p2Message, this.config.logger),
         ]);
+
+        this.logger.info(players.map(p => p.disconnected), "Finished running players");
 
         return true;
     }

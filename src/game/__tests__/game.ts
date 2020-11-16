@@ -21,6 +21,10 @@ const puzzle = {
     filetype: "c++",
 };
 
+function wait(ms: number): Promise<void> {
+    return new Promise(res => setTimeout(res, ms));
+}
+
 describe("Game", function() {
     function createNewGame(tree: BehavorialNode): Game {
         return createGame({
@@ -31,7 +35,7 @@ describe("Game", function() {
         }, tree);
     }
 
-    it("Game should be able to add a player and transition on msg or ending.", async function() {
+    it.only("Game should be able to add a player and transition on msg or ending.", async function() {
         const n0 = spyOn<TurnOnNode>(new TurnOnNode());
         const n1 = spyOn<TurnOnNode>(new TurnOnNode());
         const n2 = spyOn<TurnOnNode>(new TurnOnNode());
@@ -51,7 +55,12 @@ describe("Game", function() {
         expect(n0.run).toBeCalledTimes(1);
         expect(n1.shouldEnter).toBeCalledTimes(0);
 
+        // The extra wait(0) is because I need the messages to flush from the game
+        // If I don't, then the shouldEnter will not be called.
+        //
+        // TODO: On Game Loop
         await trashSocket(p1);
+        await wait(0);
 
         expect(n0.shouldEnter).toBeCalledTimes(2);
         expect(n0.enter).toBeCalledTimes(1);

@@ -51,7 +51,7 @@ export default class HandleMsg {
                 currentIdx += consumed;
 
                 if (found) {
-                    this.logger.info("WaitingForLength#complete", +parsedString);
+                    this.logger.trace(`WaitingForLength#complete: ${+parsedString}`);
                     this.msgLength = +parsedString;
                     this.state = State.WaitingForType;
                 }
@@ -67,7 +67,7 @@ export default class HandleMsg {
                 currentIdx += consumed;
 
                 if (found) {
-                    this.logger.info("WaitingForType#complete", parsedString);
+                    this.logger.trace(`WaitingForType#complete: ${parsedString}`);
 
                     this.msgType = parsedString;
                     this.state = State.WaitingForData;
@@ -84,7 +84,7 @@ export default class HandleMsg {
                 currentIdx += consumed;
 
                 if (found) {
-                    this.logger.info("WaitingForData#complete", parsedString);
+                    this.logger.trace(`WaitingForData#complete: ${parsedString}`);
                     this.state = State.WaitingForLength;
                     msg = parsedString;
                     completed = true;

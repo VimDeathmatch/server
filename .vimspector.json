@@ -12,6 +12,19 @@
         "smartStep": true,
         "cwd": "${workspaceRoot}"
       }
+    },
+    "manual-test": {
+      "adapter": "vscode-node",
+      "configuration": {
+        "request": "launch",
+        "protocol": "auto",
+        "stopOnEntry": true,
+        "console": "integratedTerminal",
+        "program": "${workspaceRoot}/node_modules/.bin/ts-node",
+        "args": ["-r", "tsconfig-paths/register ", "${file}"],
+        "smartStep": true,
+        "cwd": "${workspaceRoot}"
+      }
     }
   }
 }

@@ -35,7 +35,7 @@ describe("playerJoin", function() {
         const socket = new MockSocket();
         const player = createPlayer(socket as any, logger);
 
-        const playerJoining = playerJoin(player);
+        const playerJoining = playerJoin(player, logger);
         readySocket(socket);
         expect(await playerJoining).toEqual("just a tird, Mr AltFYeah");
     });
@@ -44,7 +44,7 @@ describe("playerJoin", function() {
         const socket = new MockSocket();
         const player = createPlayer(socket as any, logger);
 
-        const playerJoining = playerJoin(player);
+        const playerJoining = playerJoin(player, logger);
         trashSocket(socket);
         expect(playerJoining).rejects.toEqual(
             new Error("Unexpected message type when player joining"));

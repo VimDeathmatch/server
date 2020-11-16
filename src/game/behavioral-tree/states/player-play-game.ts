@@ -20,19 +20,24 @@ export async function playGame(config: GameConfig, player: Player, logger: pino.
             ...config.puzzle,
             editable: true,
         });
+        player.stats.start();
 
         const results: [string, string] | null = await Promise.race([
             player.getNextCommand("finished"),
             wait(config.maxPlayTime).then(() => null),
         ]);
 
+        if (player.disconnected) {
+            return;
+        }
+
         if (results === null) {
-            logger.warn("Player has timedout", {player, config});
+            logger.warn({player, config}, "Player has timedout");
             player.timedout = true;
             return;
         }
 
-        logger.info("Player has successed", {results});
+        logger.info({results}, "Player has successed");
         const stats = new PlayerStats(results[1]);
 
         if (stats.failed) {
@@ -43,10 +48,11 @@ export async function playGame(config: GameConfig, player: Player, logger: pino.
         }
 
     } catch (e) {
-        logger.fatal(e, "There was an error attempting to play the game", {
+        logger.fatal({
+            error: e,
             config,
-            player,
-        });
+            player: player.toObj(),
+        }, "There was an error attempting to play the game");
         throw new PlayerFailure(player, e);
     }
 }
@@ -72,6 +78,8 @@ export default class PlayGameNode implements BehavorialNode {
             allFinished = allFinished && player.finished;
         }
 
+        this.logger.info({failures, allFinished}, "shouldEnter");
+
         return !failures && !allFinished;
     }
 
@@ -86,7 +94,7 @@ export default class PlayGameNode implements BehavorialNode {
             } catch (e) {
                 e = e as PlayerFailure;
                 this.logger.fatal(e.reason, "A player has failed.", {
-                    player: e.player,
+                    player: e.player.toObj(),
                     config: this.config,
                 });
             }

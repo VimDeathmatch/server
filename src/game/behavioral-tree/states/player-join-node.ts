@@ -17,10 +17,11 @@ export async function sendWaitingForPlayer(player: Player) {
     });
 }
 
-export function playerJoin(player: Player): Promise<string> {
+export function playerJoin(player: Player, logger: pino.Logger): Promise<string> {
     return new Promise((res, rej) => {
 
         async function onMessage(type: string, msg: string) {
+            logger.info({type, msg}, "onMessage");
 
             // TODO(v2): Names
             if (type === "ready") {
@@ -52,9 +53,9 @@ export default class PlayerJoinNode implements BehavorialNode {
 
     async shouldEnter(players: Player[]): Promise<boolean> {
 
-        this.logger.info("should enter playerJoin node", {
+        this.logger.info({
             playerCount: players.length,
-        });
+        }, "should enter playerJoin node");
 
         let failed = false;
         let ready = true;
@@ -73,7 +74,7 @@ export default class PlayerJoinNode implements BehavorialNode {
 
         for (let i = this.joinRequests.length; i < players.length; ++i) {
             this.joinRequests.push(true);
-            playerJoin(players[i]);
+            playerJoin(players[i], this.config.logger);
         }
         return false;
     }

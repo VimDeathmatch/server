@@ -7,6 +7,11 @@ import { Stats } from "./game/score";
 // TODO: Why does this require index....
 import { Puzzle } from "./puzzles/index";
 
+export type ServerOptions = {
+    maxPlayers: number;
+    maxPlayTime: number;
+};
+
 export type DisplayMessage = {
     left: string[];
     right?: string[];
@@ -61,6 +66,7 @@ export interface Player extends EventEmitter {
     send(typeOrMsg: string, message?: string | object): Promise<void>;
     toObj(): PlayerObject;
     getNextCommand(msgType: string): Promise<[string, string]>;
+    disconnect(): void;
 }
 
 // TODO: What is the name of this thing?

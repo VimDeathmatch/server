@@ -64,17 +64,25 @@ class GameImpl extends EventEmitter implements Game {
         }
 
         const player = createPlayer(conn, this.logger);
-        await this.transition();
+        this.players.push(player);
 
+        console.log("ADDING TO MSG");
         player.on("msg", async () => {
+            await wait(0);
             this.transition();
         });
 
-        player.on("end", () => {
+        player.on("end", async () => {
+            await wait(0);
             this.transition();
         });
 
-        player.on("send-failed", () => { });
+        player.on("send-failed", async () => {
+            await wait(0);
+            this.transition();
+        });
+
+        await this.transition();
     }
 
     isFinished(): boolean {
@@ -82,6 +90,7 @@ class GameImpl extends EventEmitter implements Game {
     }
 
     private async transition() {
+        this.logger.info(`Starting GameLoop`);
         if (this.finished) {
             return;
         }
@@ -100,7 +109,11 @@ class GameImpl extends EventEmitter implements Game {
             return;
         }
 
-        await this.tree.run(this.players);
+        const rerun = await this.tree.run(this.players);
+        this.logger.info(`Finished GameLoop: ${rerun}`);
+        if (rerun) {
+            await this.transition();
+        }
     }
 }
 

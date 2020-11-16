@@ -1,4 +1,5 @@
 import * as net from "net";
+
 import pino from "pino";
 
 import HandleMsg, { createMessage } from "../networking/handle-messages";
@@ -14,7 +15,19 @@ export class PlayerImpl extends EventEmitter implements Player {
     public finished: boolean = false;
     public started: boolean = false;
     public timedout: boolean = false;
-    public failed: boolean = false;
+    private _failed: boolean = false;
+
+    get failed(): boolean {
+        return this._failed;
+    }
+    set failed(v: boolean) {
+        this._failed = v;
+        if (this._failed) {
+            this.logger.info("Player has failed");
+            this.emit("end");
+        }
+    }
+
     public disconnected: boolean = false;
     public stats: Stats;
     public failureMessage: string | null;
@@ -24,14 +37,15 @@ export class PlayerImpl extends EventEmitter implements Player {
 
     constructor(conn: net.Socket, logger: pino.Logger) {
         super();
-        this.stats = new Stats();
+        this.logger = logger.child({ name: "Player" });
+        this.stats = new Stats(this.logger);
         this.conn = conn;
         this.parser = new HandleMsg(logger);
         this.failureMessage = null;
-        this.logger = logger.child({ name: "Player" });
         this.awaitingCommands = [];
 
         conn.on("data", (d) => {
+            this.logger.info({data: d.toString()}, "Data Received");
             const {
                 completed,
                 type,
@@ -39,12 +53,15 @@ export class PlayerImpl extends EventEmitter implements Player {
             } = this.parser.parse(d.toString());
 
             if (completed) {
-                this.logger.info("conn#data", {
+                this.logger.info({
                     id: this.id,
                     type,
                     message,
-                });
+                }, "conn#data");
+
+                console.log("PLAYRE EMITS");
                 this.emit("msg", type, message);
+                console.log("PLAYRE EMITS");
 
                 for (let i = this.awaitingCommands.length - 1; i >= 0; --i) {
                     if (this.awaitingCommands[i].type === type) {
@@ -56,7 +73,7 @@ export class PlayerImpl extends EventEmitter implements Player {
         });
 
         conn.on("end", () => {
-            this.logger.info("conn#end", {id: this.id});
+            this.logger.info({id: this.id}, "conn#end");
             this.disconnected = true;
             this.emit("end");
         });
@@ -65,9 +82,9 @@ export class PlayerImpl extends EventEmitter implements Player {
     // I like this,
     // but I am not going to do it yet...
     send(typeOrMsg: string, message?: string | object): Promise<void> {
-        let msg = message ? createMessage(typeOrMsg, message) : typeOrMsg;
+        let msg = message !== undefined ? createMessage(typeOrMsg, message) : typeOrMsg;
 
-        this.logger.info("send", {msg});
+        this.logger.info({msg}, "send");
 
         return new Promise((res, rej) => {
             if (this.conn.destroyed || this.disconnected) {
@@ -77,7 +94,7 @@ export class PlayerImpl extends EventEmitter implements Player {
                     destroyed: this.conn.destroyed,
                 };
                 this.emit("send-failed", item);
-                this.logger.warn("send-failed", item);
+                this.logger.warn(item, "send-failed");
 
                 rej(item);
                 return;
@@ -85,7 +102,7 @@ export class PlayerImpl extends EventEmitter implements Player {
 
             this.conn.write(msg, (e) => {
                 if (e) {
-                    this.logger.warn("send#response#error", {error: e});
+                    this.logger.warn({error: e}, "send#response#error");
                     rej(e);
                     return;
                 }
@@ -120,6 +137,15 @@ export class PlayerImpl extends EventEmitter implements Player {
         this.awaitingCommands.push({res, rej, type});
 
         return out;
+    }
+
+    disconnect() {
+        if (!this.disconnected) {
+            this.conn.end();
+            this.conn.destroy();
+            this.disconnected = true;
+            this.emit("end");
+        }
     }
 }
 

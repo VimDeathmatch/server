@@ -9,6 +9,7 @@ import {
     DisconnectNode,
     SuccessNode,
     TimedoutNode,
+    EndGameNode,
     // TODO: Why the index??
 } from "./states/index";
 import { GameConfig } from "src/types";
@@ -23,5 +24,6 @@ export default function create(config: GameConfig) {
             new TimedoutNode(config),
             new SuccessNode(config),
         ])),
+        new EnterOnce(new EndGameNode(config)),
     ]);
 };

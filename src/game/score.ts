@@ -1,3 +1,4 @@
+import pino from "pino";
 import now from "../now";
 
 export function keyStrokeScore(keysPressed: string[]) {
@@ -48,14 +49,17 @@ export class PlayerStats {
     }
 }
 
-const MAXIMUM_TIME = 30000;
-
 export class Stats {
     public timeTaken: number;
     public score: number = 0;
     public keysPressed: string[];
 
     private startTime: number;
+    private logger: pino.Logger;
+
+    constructor(logger: pino.Logger) {
+        this.logger = logger.child({name: "Stats"});
+    }
 
     start() {
         this.startTime = now();
@@ -66,8 +70,14 @@ export class Stats {
         this.timeTaken = now() - this.startTime;
         this.keysPressed = statsFromPlayer.keys;
 
-        this.score = keyStrokeScore(this.keysPressed) +
-            timeTakenMSScore(this.timeTaken);
+        const keyScore = keyStrokeScore(this.keysPressed);
+        const timeTaken = timeTakenMSScore(this.timeTaken);
+        this.score = keyScore + timeTaken;
+
+        this.logger.info({
+            keyScore,
+            timeTaken,
+        }, "Calculated Score");
     }
 }
 
