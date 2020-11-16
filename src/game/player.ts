@@ -14,9 +14,20 @@ export class PlayerImpl extends EventEmitter implements Player {
     public ready: boolean = false;
     public finished: boolean = false;
     public started: boolean = false;
-    public timedout: boolean = false;
-    private _failed: boolean = false;
+    private _timedout: boolean = false;
 
+    get timedout(): boolean {
+        return this._timedout;
+    }
+    set timedout(v: boolean) {
+        this._timedout = v;
+        if (this._timedout) {
+            this.logger.info("Player has timedout");
+            this.emit("end");
+        }
+    }
+
+    private _failed: boolean = false;
     get failed(): boolean {
         return this._failed;
     }

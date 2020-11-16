@@ -1,6 +1,7 @@
 import pino from "pino";
 import success from "./success-game";
 import disconnected from "./disconnect-game";
+import timedout from "./timeout";
 import server from "../server";
 
 async function run() {
@@ -14,6 +15,7 @@ async function run() {
     logger.warn("Starting Tests");
     await success(logger);
     await disconnected(logger);
+    await timedout(logger);
     logger.warn("Ending Tests");
 
     s.close();

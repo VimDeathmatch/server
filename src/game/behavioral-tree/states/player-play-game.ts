@@ -32,7 +32,10 @@ export async function playGame(config: GameConfig, player: Player, logger: pino.
         }
 
         if (results === null) {
-            logger.warn({player, config}, "Player has timedout");
+            logger.warn({
+                player: player.toObj(),
+                config
+            }, "Player has timedout");
             player.timedout = true;
             return;
         }

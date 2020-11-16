@@ -9,7 +9,7 @@ function wait(ms: number): Promise<void> {
 }
 
 export default async function run(l: pino.Logger) {
-    const logger = l.child({name: "Disconnect"});
+    const logger = l.child({name: "Timedout"});
 
     const s1 = await createSocket(logger);
     const p1 = createPlayer(s1, logger);
@@ -19,9 +19,6 @@ export default async function run(l: pino.Logger) {
 
     p1.on("msg", (type: string, msg: string) => {
         logger.info({type, msg}, "PlayerMsg:1");
-    });
-    p1.on("end", () => {
-        logger.fatal("WE ARE ENDED");
     });
 
     p2.on("msg", (type: string, msg: string) => {
@@ -37,8 +34,9 @@ export default async function run(l: pino.Logger) {
 
     const p1End = onNamedEvent(p1, "end");
 
-    p2.disconnect();
-    await race(1000,
-         p1.getNextCommand("finished"),
-         p1End);
+    await race(2000,
+        p1.send("finished", {keys: ["a", "b", "c"], undoCount: 0}),
+        p1.getNextCommand("finished"),
+        p2.getNextCommand("finished"));
 };
+
