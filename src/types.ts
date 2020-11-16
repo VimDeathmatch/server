@@ -73,7 +73,7 @@ export type GameConfig = {
 
 export interface Game extends EventEmitter {
     getConfig(): GameConfig;
-    gameHasEnoughPlayers(): boolean;
+    needsPlayers(): boolean;
     addPlayer(conn: net.Socket): Promise<void>;
     getPuzzle(): Puzzle;
     getLogger(): pino.Logger;

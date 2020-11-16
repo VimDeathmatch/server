@@ -12,7 +12,7 @@ import {
     timeoutMessage
 } from "./utils";
 
-export class TimedoutNode implements BehavorialNode {
+export default class TimedoutNode implements BehavorialNode {
     constructor(private config: GameConfig) { }
 
     async enter(): Promise<void> { }

@@ -3,12 +3,9 @@ import pino from "pino";
 // I just need it to be mocked
 import * as __now from "__mocks__/now";
 
-import {
-    DisconnectedNode,
-} from "../disconnected";
+import DisconnectedNode from "../disconnected";
 
 import {
-    getDisconnectedMessage,
     getOpponentDisconnectedMessage,
 } from "../finish-message";
 

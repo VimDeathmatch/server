@@ -17,10 +17,12 @@ class GameImpl extends EventEmitter implements Game {
     private players: Player[];
     private tree: BehavorialNode;
     private finished: boolean;
+    private firstRun: boolean;
 
     constructor(private config: GameConfig, tree: BehavorialNode) {
         super();
 
+        this.firstRun = true;
         this.tree = tree;
         this.players = [];
         this.logger = config.logger.child({
@@ -48,12 +50,12 @@ class GameImpl extends EventEmitter implements Game {
         return this.config.logger;
     }
 
-    gameHasEnoughPlayers(): boolean {
-        return this.players.length === this.config.maxPlayers;
+    needsPlayers(): boolean {
+        return this.players.length < this.config.maxPlayers;
     }
 
     async addPlayer(conn: net.Socket): Promise<void> {
-        if (this.gameHasEnoughPlayers()) {
+        if (!this.needsPlayers()) {
             this.logger.fatal("GameRunner is adding players to a full game.", {
                 players: this.players
             });
@@ -87,7 +89,13 @@ class GameImpl extends EventEmitter implements Game {
         // TODO: Make a one time sequence tree
         const shouldEnter = await this.tree.shouldEnter(this.players);
 
+        if (this.firstRun && shouldEnter) {
+            await this.tree.enter();
+            this.firstRun = false;
+        }
+
         if (!shouldEnter) {
+            await this.tree.exit();
             this.finished = true;
             return;
         }

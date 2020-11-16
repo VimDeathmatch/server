@@ -12,7 +12,7 @@ import {
     failedMessage,
 } from "./utils";
 
-export class FailedNode implements BehavorialNode {
+export default class FailedNode implements BehavorialNode {
     constructor(private config: GameConfig) { }
 
     async enter(): Promise<void> { }

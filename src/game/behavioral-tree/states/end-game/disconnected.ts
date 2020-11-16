@@ -12,7 +12,7 @@ import {
     disconnectedMessage,
 } from "./utils";
 
-export class DisconnectedNode implements BehavorialNode {
+export default class DisconnectedNode implements BehavorialNode {
     constructor(private config: GameConfig) { }
 
     async enter(): Promise<void> { }

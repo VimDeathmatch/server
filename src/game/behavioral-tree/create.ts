@@ -9,17 +9,19 @@ import {
     DisconnectNode,
     SuccessNode,
     TimedoutNode,
-} from "./states";
+    // TODO: Why the index??
+} from "./states/index";
+import { GameConfig } from "src/types";
 
-export default function create() {
+export default function create(config: GameConfig) {
     return new Sequence([
-        new PlayerJoinNode(),
-        new PlayGameNode(),
+        new PlayerJoinNode(config),
+        new PlayGameNode(config),
         new EnterOnce(new Selector([
-            new FailedNode(),
-            new DisconnectNode(),
-            new SuccessNode(),
-            new TimedoutNode(),
+            new FailedNode(config),
+            new DisconnectNode(config),
+            new TimedoutNode(config),
+            new SuccessNode(config),
         ])),
     ]);
 };

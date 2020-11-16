@@ -3,9 +3,7 @@ import pino from "pino";
 // I just need it to be mocked
 import * as __now from "__mocks__/now";
 
-import {
-    FailedNode,
-} from "../failed";
+import FailedNode from "../failed";
 
 import {
     getFailedMessage,

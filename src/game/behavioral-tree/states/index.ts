@@ -1,10 +1,10 @@
 import PlayerJoinNode from "./player-join-node";
 import PlayGameNode from "./player-play-game";
 
-import FailedNode from "./states/failed";
-import DisconnectNode from "./states/disconnected";
-import SuccessNode from "./states/finished";
-import TimedoutNode from "./states/timedout";
+import FailedNode from "./end-game/failed";
+import DisconnectNode from "./end-game/disconnected";
+import SuccessNode from "./end-game/finished";
+import TimedoutNode from "./end-game/timedout";
 
 export {
     PlayerJoinNode,

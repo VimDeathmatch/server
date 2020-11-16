@@ -3,9 +3,10 @@ import * as net from "net";
 
 import pino from "pino";
 
-import { Game } from "./types";
+import { Game, GameConfig } from "./types";
 
 import { createGame } from "./game/index";
+import createGameTree from "./game/behavioral-tree/create"
 import generatePuzzle from "./puzzles/index";
 
 export default class GameRunner extends EventEmitter {
@@ -21,8 +22,16 @@ export default class GameRunner extends EventEmitter {
         this.logger.info("addPlayer");
 
         if (!this.game || !this.game.needsPlayers() || this.game.isFinished()) {
-            this.game = createGame(generatePuzzle(), this.logger);
+            const config: GameConfig = {
+                logger: this.logger,
+                puzzle: generatePuzzle(),
+                maxPlayTime: 30000,
+                maxPlayers: 2,
+            };
+
+            this.game = createGame(config, createGameTree(config));
         }
+
         this.game.addPlayer(player);
     }
 }

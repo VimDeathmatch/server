@@ -1,7 +1,7 @@
 import {
     BehavorialNode,
     Player,
-} from "../../../../types";
+} from "src/types";
 
 //TODO: Ya. this is a terrible place for enter once...
 export default class EnterOnce implements BehavorialNode {
