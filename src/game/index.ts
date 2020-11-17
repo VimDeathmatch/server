@@ -66,7 +66,6 @@ class GameImpl extends EventEmitter implements Game {
         const player = createPlayer(conn, this.logger);
         this.players.push(player);
 
-        console.log("ADDING TO MSG");
         player.on("msg", async () => {
             await wait(0);
             this.transition();

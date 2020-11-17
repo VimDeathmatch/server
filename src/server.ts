@@ -12,13 +12,14 @@ process.on("uncaughtRejection", e => {
     logger.fatal(e, "Uncaught Rejection");
 });
 
-export default function run(opts: ServerOptions = {
+export default function run(logger: pino.Logger, opts: ServerOptions = {
     maxPlayers: 2,
     maxPlayTime: 30000,
+    maxReadyTime: 10000,
 }): Promise<net.Server> {
 
     return new Promise((res, rej) => {
-        let game = new GameRunner(opts);
+        let game = new GameRunner(logger, opts);
         const server = net.createServer((c) => {
             game.addPlayer(c);
         });

@@ -45,5 +45,8 @@
                 "<rootDir>/src/game/$1"
             ]
         }
+    },
+    "dependencies": {
+        "pino": "^6.7.0"
     }
 }

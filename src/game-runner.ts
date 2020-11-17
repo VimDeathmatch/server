@@ -15,12 +15,13 @@ export default class GameRunner extends EventEmitter {
     private logger: pino.Logger;
 
     // TODO: Have better options, also they are clearly configs...
-    constructor(private serverOpts: ServerOptions = {
+    constructor(logger: pino.Logger, private serverOpts: ServerOptions = {
         maxPlayers: 2,
         maxPlayTime: 30000,
+        maxReadyTime: 30000,
     }) {
         super();
-        this.logger = pino({
+        this.logger = logger.child({
             name: "GameRunner",
             //prettyPrint: {
                 //ignore: "pid,hostname",

@@ -10,6 +10,7 @@ import { Puzzle } from "./puzzles/index";
 export type ServerOptions = {
     maxPlayers: number;
     maxPlayTime: number;
+    maxReadyTime: number;
 };
 
 export type DisplayMessage = {
@@ -71,6 +72,7 @@ export interface Player extends EventEmitter {
 
 // TODO: What is the name of this thing?
 export type GameConfig = {
+    maxReadyTime: number;
     maxPlayers: number;
     puzzle: Puzzle;
     maxPlayTime: number;

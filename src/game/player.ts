@@ -70,9 +70,7 @@ export class PlayerImpl extends EventEmitter implements Player {
                     message,
                 }, "conn#data");
 
-                console.log("PLAYRE EMITS");
                 this.emit("msg", type, message);
-                console.log("PLAYRE EMITS");
 
                 for (let i = this.awaitingCommands.length - 1; i >= 0; --i) {
                     if (this.awaitingCommands[i].type === type) {

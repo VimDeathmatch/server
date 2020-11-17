@@ -1,3 +1,6 @@
+import pino from "pino";
+
 import server from "./server";
-server();
+
+server(pino({name: "EntryPoint"}));
 

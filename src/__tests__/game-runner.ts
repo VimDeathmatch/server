@@ -1,3 +1,4 @@
+import pino from "pino";
 import * as net from "net";
 
 let isFinished = false;
@@ -21,6 +22,7 @@ jest.mock("game/index", function() {
 
 import GameRunner from "../game-runner";
 import { GameConfig, BehavorialNode } from "src/types";
+const logger = pino({name: "__tests__game-runner"});
 
 describe("Game Runner", function() {
     beforeEach(function() {
@@ -30,7 +32,7 @@ describe("Game Runner", function() {
     });
 
     it("add two players, no problems", function() {
-        const runner = new GameRunner();
+        const runner = new GameRunner(logger);
         runner.addPlayer({} as any as net.Socket);
         expect(currentGame).not.toBeNull();
         runner.addPlayer({} as any as net.Socket);
@@ -38,7 +40,7 @@ describe("Game Runner", function() {
     });
 
     it("done is true, therefore second player should get put into new game.", function() {
-        const runner = new GameRunner();
+        const runner = new GameRunner(logger);
         runner.addPlayer({} as any as net.Socket);
         isFinished = true;
         let g = currentGame;
@@ -49,7 +51,7 @@ describe("Game Runner", function() {
     });
 
     it("needsPlayers is true, therefore second player should get put into new game.", function() {
-        const runner = new GameRunner();
+        const runner = new GameRunner(logger);
         runner.addPlayer({} as any as net.Socket);
         needsPlayers = false;
         expect(currentGame).not.toBeNull();

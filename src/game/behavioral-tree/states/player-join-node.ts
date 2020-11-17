@@ -7,6 +7,10 @@ import {
 } from "../../../types";
 import padMessage from "../../utils/padMessage";
 
+function wait(ms: number): Promise<void> {
+    return new Promise(res => setTimeout(res, ms));
+}
+
 export const WaitingForPlayersMsg = " Waiting for other player to connect...";
 export async function sendWaitingForPlayer(player: Player) {
     await player.send("waiting", {
@@ -17,17 +21,19 @@ export async function sendWaitingForPlayer(player: Player) {
     });
 }
 
-export function playerJoin(player: Player, logger: pino.Logger): Promise<string> {
-    return new Promise((res, rej) => {
+export function playerJoin(player: Player, config: GameConfig): Promise<void> {
 
+    let finished = false;
+    const out: Promise<void> = new Promise((res, rej) => {
         async function onMessage(type: string, msg: string) {
-            logger.info({type, msg}, "onMessage");
+            finished = true;
+            config.logger.info({type, msg}, "onMessage");
 
             // TODO(v2): Names
             if (type === "ready") {
                 player.off("msg", onMessage);
-                res(msg);
                 player.ready = true;
+                res();
                 await sendWaitingForPlayer(player);
                 return;
             }
@@ -38,6 +44,15 @@ export function playerJoin(player: Player, logger: pino.Logger): Promise<string>
 
         player.on("msg", onMessage);
     });
+
+    return Promise.race([
+        out,
+        wait(config.maxReadyTime).then(() => {
+            if (!finished) {
+                player.failed = true;
+            }
+        }),
+    ]);
 }
 
 export default class PlayerJoinNode implements BehavorialNode {
@@ -60,7 +75,9 @@ export default class PlayerJoinNode implements BehavorialNode {
         let failed = false;
         let ready = true;
         for (let i = 0; !failed && i < players.length; ++i) {
-            failed = players[i].failed;
+            failed = players[i].failed ||
+                players[i].disconnected || players[i].timedout;
+
             ready = ready && players[i].ready;
         }
 
@@ -74,7 +91,7 @@ export default class PlayerJoinNode implements BehavorialNode {
 
         for (let i = this.joinRequests.length; i < players.length; ++i) {
             this.joinRequests.push(true);
-            playerJoin(players[i], this.config.logger);
+            playerJoin(players[i], this.config);
         }
         return false;
     }

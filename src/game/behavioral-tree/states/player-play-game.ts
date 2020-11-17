@@ -17,7 +17,9 @@ function wait(ms: number): Promise<void> {
 export async function playGame(config: GameConfig, player: Player, logger: pino.Logger): Promise<void> {
     try {
         await player.send("start-game", {
-            ...config.puzzle,
+            left: config.puzzle.start,
+            right: config.puzzle.end,
+            filetype: config.puzzle.filetype,
             editable: true,
         });
         player.stats.start();
