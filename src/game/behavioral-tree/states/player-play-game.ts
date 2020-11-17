@@ -4,6 +4,8 @@ import { Player, GameConfig, BehavorialNode } from "../../../types";
 import { PlayerStats } from "../../score";
 import PlayerFailure from "../../errors/player-failure";
 
+import padMessage from "game/utils/padMessage";
+
 // send the game message
 //        -> some amount of time to complete it.
 //        -> send back their results
@@ -51,6 +53,15 @@ export async function playGame(config: GameConfig, player: Player, logger: pino.
             player.stats.calculateScore(stats);
             player.finished = true;
         }
+
+        // TODO: Consider breaking this into several behavior nodes
+        // TODO: Probably should test this inside of manual tests, also may break unit tests...
+        await player.send("waiting", {
+            left: padMessage([
+                " Waiting for other player to finish...",
+            ]),
+            editable: false
+        });
 
     } catch (e) {
         logger.fatal({
