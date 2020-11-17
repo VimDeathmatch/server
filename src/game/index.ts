@@ -12,6 +12,7 @@ function wait(ms: number): Promise<void> {
     return new Promise(res => setTimeout(res, ms));
 }
 
+let id = 0;
 class GameImpl extends EventEmitter implements Game {
     private logger: pino.Logger;
     private players: Player[];
@@ -27,6 +28,7 @@ class GameImpl extends EventEmitter implements Game {
         this.players = [];
         this.logger = config.logger.child({
             name: "Game",
+            id: ++id,
         });
     }
 
